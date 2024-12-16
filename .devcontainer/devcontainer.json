@@ -2,9 +2,9 @@
     "name": "Python Dev Container",
     "image": "mcr.microsoft.com/devcontainers/python:dev-3.11",
     "features": {
-      "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+      "ghcr.io/devcontainers-extra/features/ffmpeg-apt-get:1": {}
     },
-    "postCreateCommand": "pip install poetry && poetry install",
+    "postCreateCommand": ".devcontainer/post-install.sh",
     "customizations": {
       "vscode": {
         "extensions": [
