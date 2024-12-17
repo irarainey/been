@@ -1,6 +1,7 @@
 import re
 import os
 import glob
+import argparse
 from markitdown import MarkItDown
 from geopy.geocoders import AzureMaps
 from dotenv import load_dotenv
@@ -70,8 +71,11 @@ def parse_images(directory):
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Parse images from a specified path.')
+    parser.add_argument('path', type=str, help='The path to the directory containing images')
+    args = parser.parse_args()
 
-    image_data = parse_images("images")
+    image_data = parse_images(args.path)
 
     for item in image_data:
         print(item)
