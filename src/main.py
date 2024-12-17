@@ -24,7 +24,7 @@ def dms_to_decimal(dms_str):
 
         decimal_degree = degrees + minutes + seconds
 
-        if direction in ['S', 'W']:
+        if direction in ["S", "W"]:
             decimal_degree = -decimal_degree
 
         decimal_coords.append(decimal_degree)
@@ -36,7 +36,7 @@ def dms_to_decimal(dms_str):
 def parse_images(directory):
     markitdown = MarkItDown()
     output = []
-    pattern = os.path.join(directory, '**', '*.jpg')
+    pattern = os.path.join(directory, "**", "*.jpg")
     jpg_files = glob.glob(pattern, recursive=True)
 
     for jpg_file in jpg_files:
@@ -50,16 +50,20 @@ def parse_images(directory):
         decimal_coords = dms_to_decimal(gps_position.group(1))
 
         geolocator = AzureMaps(os.getenv("AZURE_MAPS_KEY"))
-        location = geolocator.reverse(
-            f"{decimal_coords[0]}, {decimal_coords[1]}")
+        location = geolocator.reverse(f"{decimal_coords[0]}, {decimal_coords[1]}")
 
-        output.append({"filename": jpg_file,
-                       "location": {
-                           "latitude": decimal_coords[0],
-                           "longitude": decimal_coords[1],
-                           "address": location.address,
-                       },
-                       "when": when_taken.group(1)})
+        output.append(
+            {
+                "filename": jpg_file,
+                "location": {
+                    "latitude": decimal_coords[0],
+                    "longitude": decimal_coords[1],
+                    "address": location.address,
+                    "url": f"https://www.bing.com/maps?cp={decimal_coords[0]}~{decimal_coords[1]}&lvl=16",
+                },
+                "when": when_taken.group(1),
+            }
+        )
 
         sorted_by_date = sorted(output, key=lambda x: x["when"])
     return sorted_by_date
