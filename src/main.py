@@ -68,7 +68,7 @@ def parse_images(directory, client):
             llm_prompt=f"""
                 You are an individual looking back at a trip you have taken by reviewing the photographs.
                 Write a paragraph for this image that describes the scene.
-                Only use the latitude and longitude coordinates ({decimal_coords[0]},{decimal_coords[1]}) 
+                Only use the latitude and longitude coordinates ({decimal_coords[0]},{decimal_coords[1]})
                 and the town or city from the address ({location}) as a reference for it's geographic location.
                 Do not include the coordinates in the output.
                 Do include the name of the city or town the image is from.
@@ -109,6 +109,7 @@ if __name__ == "__main__":
         "path", type=str, help="The path to the directory containing images"
     )
     args = parser.parse_args()
+    directory = args.path
 
     client = AzureOpenAI(
         azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
@@ -117,7 +118,7 @@ if __name__ == "__main__":
     )
 
     print("Parsing images...")
-    image_data = parse_images(args.path, client)
+    image_data = parse_images(directory, client)
 
     print("Sorting images by date taken...")
     sorted_by_date = sorted(image_data, key=lambda x: x["when"])
@@ -125,15 +126,26 @@ if __name__ == "__main__":
     print("Creating summary of trips...")
 
     conversation = [
-        {"role": "system", "content": "You are a helpful travel assistant."},
+        {
+            "role": "system",
+            "content": "You are a helpful travel writing assistant. Only output the markdown content.",
+        },
         {
             "role": "user",
             "content": f"""
-            Given the following JSON journey data, create a journal style entry
-            that summaries all the trips I have taken this year.
+            Given the following JSON journey data, collate information from each country and trip and create a summary of each trip.
             ```json
             {json.dumps(sorted_by_date, indent=4)}
             ```
+            The markdown should contain:
+            - A top-level heading with the year or years of the trips.
+            - Chronologically order the trips by date taken of all images for that trip to that country and create a section for each trip.
+            - If the date of the images in close geographic proximity span more than fourteen days then create a separate section for each trip.
+            - Create sub-headings for the country of the location with the dates of that trip.
+            - Every trip must inclulde, below the sub-heading, a summary of the entire trip to that location referencing all the images. This summary should be descriptive and more than a single sentence.
+            - The image.
+            - The single sentence description of the image as a caption that includes the date and location it was taken as well as a URL to the location on a map as provided in the JSON data. Do not include the word caption in the output.
+            - Do not format the caption using a bullet point or list.
             Create the output in markdown format.
         """,
         },
@@ -145,4 +157,7 @@ if __name__ == "__main__":
     )
 
     completion_text = response.choices[0].message.content
-    print(completion_text)
+
+    output_file = f"{directory}/summary.md"
+    with open(output_file, "w") as file:
+        file.write(completion_text)
