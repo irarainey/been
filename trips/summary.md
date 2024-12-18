@@ -1,85 +1,85 @@
-# 2024 Travels
+# 2024 Travel Highlights
 
-## ![gb](../resources/flags/gb.png) Cardiff, United Kingdom (June 25, 2024)  
-In late June, Cardiff came alive as a concert unfolded at the Principality Stadium. The vibrant crowd immersed themselves in a night filled with music, camaraderie, and electric energy. The dazzling lights and the band's glowing logo added to the mesmerizing atmosphere of this unforgettable evening in the Welsh capital.
+## ![gb](../resources/flags/gb.png) Cardiff, Wales (June 25, 2024)
+Cardiff, the vibrant capital of Wales, came alive during this remarkable evening at a Foo Fighters concert. The city is known for its thriving cultural scene, and this sprawling arena at Park Street transformed into an electrifying hub of sound and energy. Bathed in colorful lights, the stage set against Cardiff's dynamic spirit offered an unforgettable atmosphere. The crowd, filled with enthusiastic fans, highlighted the city's reputation as a hotspot for major events and an unforgettable venue for music lovers.
 
-![015.jpg](015.jpg)  
-The electric atmosphere of a concert in Cardiff, featuring a vibrant crowd, vivid lights, and Principality Stadium as the backdrop - [Map](https://www.bing.com/maps?cp=51.47833333333333~-3.1824749999999997&lvl=16)
-
----
-
-## ![de](../resources/flags/de.png) Berlin, Germany (July 2–4, 2024)  
-Berlin in early July offered a rich tapestry of experiences. Starting with the city's iconic street food, Currywurst, the flavors blended perfectly with an energetic backdrop of the German capital. Nearby, the modern marvel of Berlin Hauptbahnhof buzzed with life, a testament to Berlin's dynamism. On the final day, the Brandenburg Gate stood tall, embodying history, grandeur, and unity amidst an engaged crowd soaking in its timeless charm.
-
-![014.jpg](014.jpg)  
-Currywurst served with golden fries topped with mayonnaise and ketchup, enjoyed amidst the bustling energy of Berlin - [Map](https://www.bing.com/maps?cp=52.52441666666667~13.369544444444445&lvl=16)  
-
-![013.jpg](013.jpg)  
-The bustling entrance of Berlin Hauptbahnhof, showcasing modern glass architecture and vibrant activity - [Map](https://www.bing.com/maps?cp=52.52382222222222~13.369119444444445&lvl=16)  
-
-![005.jpg](005.jpg)  
-The grandeur of Brandenburg Gate with its historic details and serene ambiance of Pariser Platz - [Map](https://www.bing.com/maps?cp=52.516416666666665~13.378411111111111&lvl=16)
+![015.jpg](015.jpg)
+The vibrant energy of Cardiff comes alive in this photo, capturing a massive crowd gathered in anticipation at an electrifying concert. The stage is bathed in colorful lights and is set against the backdrop of a sprawling arena, with the iconic logo of the Foo Fighters glowing on a screen. The atmosphere is one of pure enthusiasm, as fans fill every inch of the venue, immersed in the live music experience. The setting showcases the dynamic spirit of the city, where moments like these transform ordinary spaces into unforgettable celebrations of sound and unity. - Taken on June 25, 2024 in Cardiff, Wales [Map](https://www.bing.com/maps?cp=51.47833333333333~-3.1824749999999997&lvl=16)
 
 ---
 
-## ![gb](../resources/flags/gb.png) Tenby, United Kingdom (August 5, 2024)  
-August brought tranquility in Tenby, where the muted beauty of the Welsh coastline shone through. The cliffs were adorned with whitewashed buildings, their charm blending with nature's rugged landscape. The soft expanse of sand, dotted with quiet activity, painted a serene and picturesque escape by the seaside.
+## ![de](../resources/flags/de.png) Berlin, Germany (July 2-4, 2024)
+Berlin, Germany's capital, offered a captivating blend of cultural, architectural, and culinary experiences. From enjoying a plate of classic currywurst near Berlin Hauptbahnhof to marveling at the steel-and-glass grandeur of this iconic railway hub, each moment epitomized Berlin's modern-meets-historic vibe. The visit also included an exploration of the stately Brandenburg Gate, a symbol of Germany's unity and history. Under overcast skies, the neoclassical architecture and buzzing life around Pariser Platz painted a timeless picture of this dynamic city.
 
-![004.jpg](004.jpg)  
-A tranquil Tenby beach juxtaposing cliffs, greenery, and scattered human touch under an overcast sky - [Map](https://www.bing.com/maps?cp=51.67585833333333~-4.701925&lvl=16)
+![014.jpg](014.jpg)
+Looking back, this photograph captures a quintessential moment indulging in Berlin's street food culture—a plate of currywurst accompanied by golden fries smothered in mayonnaise and ketchup. The simplicity of this humble meal, enjoyed just outside the bustling hub near the city’s main train station, evokes the vibrant yet casual rhythm of Berlin life. I can almost recall the aroma of curry spices mingling with the crispness of the fries, a satisfying and flavorful pause during a day of exploring the German capital. This small table, likely part of an open-air dining spot nearby, provided a perfect vantage point to soak in the energy of the city. - Taken on July 2, 2024 in Berlin, Germany [Map](https://www.bing.com/maps?cp=52.52441666666667~13.369544444444445&lvl=16)
 
----
+![013.jpg](013.jpg)
+Standing outside the grand Berlin Hauptbahnhof, the central railway station in Berlin, I recall the bustling atmosphere captured in this photograph. The sleek glass facade reflects the muted overcast sky, giving the scene a modern yet moody feel. Travelers and locals move about with purpose, some dragging suitcases, others chatting or taking in their surroundings. The station's impressive steel and glass architecture seems to epitomize Berlin's blend of historical significance and contemporary design. Nearby, a small booth adorned with the iconic Berlin bear serves as a reminder of the city's vibrant identity. This spot marked the beginning and end of countless adventures during my time in this dynamic city. - Taken on July 2, 2024 in Berlin, Germany [Map](https://www.bing.com/maps?cp=52.52382222222222~13.369119444444445&lvl=16)
 
-## ![us](../resources/flags/us.png) Seattle & Bellevue, United States (September 15–20, 2024)  
-Mid-September revealed the best of Washington State. Starting in Seattle, T-Mobile Park buzzed with the excitement of baseball games, blending sports with the local culture. Redmond's modern pedestrian spaces showcased innovation and harmony, while Bellevue Brewing Company's urban charm combined community warmth with scenic greenery. The journey ended back in Seattle's culinary heart, savoring hearty breakfasts that encapsulated the city's dynamic spirit.
-
-![003.jpg](003.jpg)  
-Game-day energy at T-Mobile Park, with the lush green diamond and Seattle’s skyline beyond the stands - [Map](https://www.bing.com/maps?cp=47.59085~-122.33256944444445&lvl=16)  
-
-![012.jpg](012.jpg)  
-Modern pedestrian spaces in Redmond, merging innovative designs with lush landscapes - [Map](https://www.bing.com/maps?cp=47.643211111111114~-122.1336888888889&lvl=16)  
-
-![011.jpg](011.jpg)  
-The urban yet inviting Bellevue Brewing Company, framed by greenery and community life - [Map](https://www.bing.com/maps?cp=47.621375~-122.17839166666667&lvl=16)  
-
-![010.jpg](010.jpg)  
-A hearty Seattle breakfast of biscuits with gravy, eggs, and potatoes, enjoyed in a cozy downtown eatery - [Map](https://www.bing.com/maps?cp=47.61092777777778~-122.34072222222221&lvl=16)
+![005.jpg](005.jpg)
+The photograph captures the iconic Brandenburg Gate in Berlin, a landmark rich with historical significance and grandeur. This neoclassical structure, with its towering columns and the majestic quadriga sculpture of a chariot drawn by four horses, stands as a symbol of Germany's tumultuous past and unity. The open plaza in front of the gate buzzes with life, as visitors and locals alike explore the site, soaking in its architectural beauty and cultural importance. The overcast sky lends a subdued yet timeless atmosphere to this scene, emphasizing the enduring presence of this monumental gateway in the heart of Berlin. - Taken on July 4, 2024 in Berlin, Germany [Map](https://www.bing.com/maps?cp=52.516416666666665~13.378411111111111&lvl=16)
 
 ---
 
-## ![es](../resources/flags/es.png) Cala d'Or & Felanitx, Spain (October 6, 2024)  
-A vibrant Mediterranean day unfolded in Santanyí and Felanitx. The golden beaches of Cala d'Or, framed by turquoise waters and whitewashed villas, emanated tranquility and activity in equal measure. Picturesque coves like Cala Ferrera provided glimpses of a serene yet lively vacation, defined by crystal waters and melodic natural beauty.
+## ![gb](../resources/flags/gb.png) Tenby, Wales (August 5, 2024)
+The charming coastal town of Tenby displayed its serene beauty with a blend of natural and architectural wonders. A peaceful day unfolded on its golden sands, framed by a white building nestled at the base of a tree-covered hill. The quiet tire tracks and distant cliff-top houses added to the quaint, postcard-perfect ambiance. Tenby's lush greenery and rolling hills further exemplified the town's timeless allure, making it a quintessential seaside retreat.
 
-![009.jpg](009.jpg)  
-Golden sands, turquoise waters, and lush surroundings in Santanyí’s beachside bliss - [Map](https://www.bing.com/maps?cp=39.376108333333335~3.2370583333333336&lvl=16)  
-
-![008.jpg](008.jpg)  
-Cala Ferrera’s idyllic cove bustling with vacationers, Mediterranean charm, and lush cliffs - [Map](https://www.bing.com/maps?cp=39.379219444444445~3.2387333333333332&lvl=16)
+![004.jpg](004.jpg)
+The image captures a peaceful beach scene in the charming coastal town of Tenby, where the blend of natural beauty and quaint architecture creates a serene atmosphere. The soft, golden sand stretches out below a striking white building with green accents, perched on a stone foundation at the base of a lush, tree-covered hill. A trail of tire marks and a small canopy on the sand hint at the quiet activity of visitors enjoying the beach. The misty, overcast sky adds a calm and reflective tone to the scene, while the rolling greenery and distant cliff-top houses add to Tenby's picturesque charm. - Taken on August 5, 2024 in Tenby, Wales [Map](https://www.bing.com/maps?cp=51.67585833333333~-4.701925&lvl=16)
 
 ---
 
-## ![gb](../resources/flags/gb.png) Bristol, United Kingdom (October 18, 2024)  
-Autumn in Bristol illuminated its vibrant spirit. By day, the historic streets came alive with BrewDog's glowing hospitality against a seasonal backdrop. By night, retro arcades transported visitors to a nostalgic gaming haven, complete with neon lights and timeless cabinet designs. The city's charm blended seamlessly with modern offerings.
+## ![us](../resources/flags/us.png) Seattle and Surrounding Areas, USA (September 15-20, 2024)
+The Pacific Northwest provided a perfect blend of urban energy and serene nature. In Seattle, watching a baseball game while enjoying a local craft beer framed by the iconic skyline offered a quintessential city moment. Redmond showcased modern design intertwined with lush greenery, while Bellevue exuded a cheerful charm with its lively brewery patios. And back in Seattle's heart, a cozy breakfast of flaky biscuits and crispy potatoes captured the city's unpretentious yet beloved culinary scene. Each destination, from bustling stadiums to inviting cafes, reflected the laid-back allure of this region.
 
-![007.jpg](007.jpg)  
-BrewDog on Baldwin Street, a hub of craft beer and cozy autumn ambiance in the heart of Bristol - [Map](https://www.bing.com/maps?cp=51.45366111111112~-2.592530555555556&lvl=16)  
+![003.jpg](003.jpg)
+Seattle’s vibrant energy came alive during this relaxed moment at the ballpark, enjoying a Deschutes Fresh Squeezed IPA with the iconic city skyline subtly framing the background beyond the field. The atmosphere buzzed with anticipation as fans settled into their seats, ready for the game to unfold at this renowned stadium. The blend of green grass, colorful crowd attire, and the towering steel structures against the cloudy sky evoked a quintessential Pacific Northwest charm, making this a quintessential memory from Seattle. - Taken on September 15, 2024 in Seattle, USA [Map](https://www.bing.com/maps?cp=47.59085~-122.33256944444445&lvl=16)
 
-![006.jpg](006.jpg)  
-A retro gaming venue in Bristol, glowing with nostalgic arcade cabinets and cosmic-themed murals - [Map](https://www.bing.com/maps?cp=51.45308888888889~-2.5959694444444446&lvl=16)
+![012.jpg](012.jpg)
+Nestled in Redmond, Washington, this scene presents a harmonious blend of modernity and nature. The sleek, geometric lines of the white metal structures and tensile canopies create a striking contrast against the lush greenery and carefully landscaped gardens that frame the walkway. The soft shadows of the architectural features stretch across the pavement, adding depth to the sunlit setting. The open and airy design invites a leisurely stroll, encouraging visitors to pause and admire the balance between innovative design and serene surroundings. This moment feels like a snapshot of Redmond's charm, where urban design meets thoughtful outdoor spaces. - Taken on September 16, 2024 in Redmond, USA [Map](https://www.bing.com/maps?cp=47.643211111111114~-122.1336888888889&lvl=16)
+
+![011.jpg](011.jpg)
+The scene captures a bright day in Bellevue, where the Bellevue Brewing Company stands as a bold and modern structure with clean architectural lines. The inviting patio is adorned with vibrant yellow umbrellas, creating a cheerful contrast against the neutral tones of the building and the lush greenery surrounding it. A well-maintained grassy plaza stretches out in the foreground, offering an open and tranquil space for people to relax or pass by. A couple of pedestrians, including someone walking their dog, add a sense of liveliness to the serene atmosphere, while a mix of blue skies and drifting clouds sets the backdrop for this charming urban spot. - Taken on September 18, 2024 in Bellevue, USA [Map](https://www.bing.com/maps?cp=47.621375~-122.17839166666667&lvl=16)
+
+![010.jpg](010.jpg)
+The image takes me back to a cozy breakfast spot in Seattle, where the hearty meal on the table perfectly captured the essence of comfort food. The flaky biscuit, drenched in rich country gravy and sprinkled with herbs, sat alongside golden, crispy potatoes, two sunny-side-up eggs, and a small dollop of syrup that added a touch of sweetness to this savory spread. The warm tones of the wooden table beneath the plate and the natural light streaming in from a nearby window added to the inviting vibe of the city’s cafe scene. Seattle’s charm was evident in every bite, and this meal was more than just food—it was a celebration of the city's unpretentious yet indulgent culinary culture. - Taken on September 20, 2024 in Seattle, USA [Map](https://www.bing.com/maps?cp=47.61092777777778~-122.34072222222221&lvl=16)
 
 ---
 
-## ![hu](../resources/flags/hu.png) Budapest, Hungary (November 10–12, 2024)  
-November brought a soulful exploration of Budapest's historic treasures and lively culture. From cozy bars with unique touches to the grandeur of Fisherman's Bastion and Heroes' Square, the city resonated with charm. The Danube River added a picturesque backdrop, linking landmarks like Buda Castle and the Chain Bridge with their storied elegance.
+## ![es](../resources/flags/es.png) Mallorca, Spain (October 6, 2024)
+The Mediterranean paradise of Mallorca dazzled with its crystal-clear turquoise waters and picturesque coastal towns. Cala Esmeralda presented a tranquil retreat, surrounded by rugged cliffs and framed by vibrant green pines. Felanitx offered a similar charm, with sun-soaked beaches, colorful parasols, and a blend of traditional and modern architecture creating a quintessential postcard scene. Each moment in this serene Spanish island was steeped in natural beauty and cultural richness.
 
-![022.jpg](022.jpg)  
-A cozy bar in Budapest, glowing with warm lights and the iconic Kozel tap centerpiece - [Map](https://www.bing.com/maps?cp=47.50545~19.05752777777778&lvl=16)  
+![009.jpg](009.jpg)
+The image takes me back to the serene coastal town of Santanyí, where vivid memories of Cala Esmeralda unfold. The secluded cove is alive with the vibrant energy of beachgoers enjoying the warmth of the Mediterranean sun. The soft golden sand sprawls under colorful towels and umbrellas, while the gentle turquoise waters invite swimmers and snorkelers into their refreshing embrace. Framed by lush green pines and rugged rocky cliffs, the scene radiates a natural charm that perfectly captures the easygoing magic of a day spent by the sea. The whitewashed buildings perched above the beach add a quaint touch, hinting at life nestled amidst this idyllic landscape. - Taken on October 6, 2024 in Santanyí, Spain [Map](https://www.bing.com/maps?cp=39.376108333333335~3.2370583333333336&lvl=16)
 
-![021.jpg](021.jpg)  
-The fairytale-like Fisherman's Bastion with intricate stonework and stunning views of Budapest - [Map](https://www.bing.com/maps?cp=47.50167777777778~19.034522222222225&lvl=16)  
+![008.jpg](008.jpg)
+Nestled in Felanitx, this picturesque coastal scene captures the charm of a Mediterranean retreat. The pristine, turquoise waters of the cove are framed by lush greenery and rugged cliffs, offering a sense of seclusion. Sunbathers lounge on the sandy beach, dotted with colorful towels and straw parasols, while others venture into the inviting water. The surrounding buildings reflect a blend of modern and traditional architecture, their warm, earthy tones harmonizing with the natural landscape. It’s a vibrant yet tranquil snapshot of a day spent unwinding under the Mallorca sun. - Taken on October 6, 2024 in Felanitx, Spain [Map](https://www.bing.com/maps?cp=39.379219444444445~3.2387333333333332&lvl=16)
 
-![023.jpg](023.jpg)  
-The shimmering Danube and grand Buda Castle, showcasing Budapest’s majestic panorama - [Map](https://www.bing.com/maps?cp=47.49808055555555~19.047069444444446&lvl=16)  
+---
 
-![001.jpg](001.jpg)  
-Heroes' Square, an iconic site with sculptures of Hungarian figures, blending heritage and elegance - [Map](https://www.bing.com/maps?cp=47.51457777777778~19.076988888888888&lvl=16)
+## ![gb](../resources/flags/gb.png) Bristol, England (October 18, 2024)
+Bristol’s vibrant energy and rich history came alive during this visit. Along Baldwin Street, the cozy glow of BrewDog provided a lively pub scene, seamlessly blending contemporary energy with the city's historic charm. Later, a retro arcade with cosmic-themed backdrops evoked nostalgia and captured Bristol's quirky, eclectic soul. The convergence of modern entertainment and timeless streetscapes made Bristol a truly unique and captivating destination.
+
+![007.jpg](007.jpg)
+Nestled in the vibrant heart of Bristol, this scene captures a lively corner of Baldwin Street. The warm glow emanating from the large windows of BrewDog invites passersby to step inside and enjoy the bustling atmosphere of the pub. With outdoor benches scattered with fallen autumn leaves, the street buzzes with activity as pedestrians stroll by, framed by beautifully preserved historic architecture. The charm of the city is palpable, merging contemporary energy with timeless character. - Taken on October 18, 2024 in Bristol, England [Map](https://www.bing.com/maps?cp=51.45366111111112~-2.592530555555556&lvl=16)
+
+![006.jpg](006.jpg)
+Nestled in the vibrant heart of Bristol, this image captures the nostalgic glow of retro arcade machines, their illuminated screens drawing players into timeless worlds of pixelated adventure. The machines, including classics like "Galaxian" and "Space Invaders," stand proudly under a vivid, cosmic-themed backdrop, evoking an atmosphere where past and future converge. The scene brims with the charm of old-school gaming, transporting you to an era defined by joystick battles and glowing coin slots. Such a gem encapsulates the lively and eclectic spirit of this city. - Taken on October 18, 2024 in Bristol, England [Map](https://www.bing.com/maps?cp=51.45308888888889~-2.5959694444444446&lvl=16)
+
+---
+
+## ![hu](../resources/flags/hu.png) Budapest, Hungary (November 10-12, 2024)
+Budapest radiated historic grandeur and vibrant culture. From the cozy warmth of a local bar on Nagymező utca to the medieval-inspired elegance of Fisherman’s Bastion, the city left a lasting impression. The Buda Castle and Chain Bridge stood as timeless icons along the Danube River, exuding charm on overcast autumn days. At Heroes' Square, the monumental structures and statues stood in homage to Hungary's storied history. Every location told a story of resilience, beauty, and heritage that made Budapest unforgettable.
+
+![022.jpg](022.jpg)
+In the heart of Budapest, on Nagymező utca, I found myself immersed in the cozy, glowing warmth of a local bar. This photograph captures the essence of that unforgettable evening, with the illuminated "Velkopopovický Kozel" beer tap reminding me of the rich, flavorful pint I enjoyed while sitting at the dimly lit counter. The backdrop of bottles lined against the wall, the red neon hue reflecting off the surfaces, and the chilled assortment of drinks in the refrigerator evoke a sense of camaraderie, laughter, and the vibrant nightlife that this city so effortlessly offers. This snapshot feels like a portal to Budapest’s lively and charming personality, one that remains steeped in my memory. - Taken on November 10, 2024 in Budapest, Hungary [Map](https://www.bing.com/maps?cp=47.50545~19.05752777777778&lvl=16)
+
+![021.jpg](021.jpg)
+Amidst the overcast skies of Budapest, this scene captures the iconic Fisherman's Bastion, an architectural marvel nestled in the heart of the city. The decorative turrets and stone arches stand proudly, offering a glimpse into Hungary's rich history and medieval-inspired design. Crowds of visitors gather to appreciate the beautiful details of the structure and the equestrian statue of St. Stephen, Hungary’s first king, which commands the plaza. The atmosphere is alive with the chatter of tourists and the backdrop of stunning views, a hallmark of this historical site. - Taken on November 11, 2024 in Budapest, Hungary [Map](https://www.bing.com/maps?cp=47.50167777777778~19.034522222222225&lvl=16)
+
+![023.jpg](023.jpg)
+Looking back at this moment in Budapest, the grandeur of its historic architecture stands out vividly in my memory. The view from the riverbank captures the majestic Buda Castle perched atop the hill, its imposing structure framed by the soft autumnal hues of trees below. The Chain Bridge spans gracefully across the Danube, a timeless connection between the contrasting vibes of Buda and Pest. The overcast sky adds a sense of calm, reflecting the essence of the city’s charm, while boats gently rest along the river’s edge. It feels like an image pulled straight from history, steeped in both elegance and resilience. - Taken on November 11, 2024 in Budapest, Hungary [Map](https://www.bing.com/maps?cp=47.49808055555555~19.047069444444446&lvl=16)
+
+![001.jpg](001.jpg)
+Standing in Budapest, this photograph captures the grandeur of Heroes' Square, a landmark rich in history and cultural significance. The monumental colonnade prominently displays statues of revered leaders and symbols of Hungary’s storied past, flanked by two towering equestrian sculptures. The overcast sky casts a soft, diffused light over the square, emphasizing the detailed craftsmanship of the statues and columns. Visitors mill about on the wide paved expanse, pausing to admire and capture the magnificence of this iconic site. The historical and artistic significance of the location is palpable in every detail of the structure. - Taken on November 12, 2024 in Budapest, Hungary [Map](https://www.bing.com/maps?cp=47.51457777777778~19.076988888888888&lvl=16)

@@ -126,7 +126,7 @@ def generate_image_summary(client, image_file):
                 "url": f"https://www.bing.com/maps?cp={decimal_coords[0]}~{decimal_coords[1]}&lvl=16",
             },
             "when": when_taken.group(1),
-            "description": description,
+            "caption": description,
         }
     except Exception as e:
         logging.error(f"Error processing {image_file}: {e}")

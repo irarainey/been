@@ -96,6 +96,11 @@ def main():
     logging.info("Generating summary of trips...")
     markdown_content = generate_trip_summary(client, sorted_by_date)
 
+    # Parse the markdown to update the image captions
+    logging.info("Updating image captions...")
+    for image in sorted_by_date:
+        markdown_content = markdown_content.replace(f"%{image['filename']}%", f"{image['caption']}")
+
     # Write the markdown summary to a file
     write_markdown_summary(directory, markdown_content)
 
