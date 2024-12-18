@@ -69,7 +69,7 @@ def extract_metadata(image_file, client):
                 Do include the name of the city or town the image is from.
                 If you cannot determine the city or town then do not make it up just exclude it.
             """,
-            llm_temperature=0.5,
+            llm_temperature=0.3,
         )
 
         # Restore stderr

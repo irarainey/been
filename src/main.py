@@ -99,6 +99,7 @@ def main():
                 {json.dumps(sorted_by_date, indent=4)}
                 ```
             """,
+            "temperature": 0.3,
         },
     ]
 
