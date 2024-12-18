@@ -1,6 +1,6 @@
 import json
 from openai import AzureOpenAI
-from constants import GPT_MODEL, SUMMARY_SYSTEM_PROMPT, TRIP_SUMMARY_TEMPERATURE
+from constants import GPT_MODEL, MARKDOWN_OUTPUT_TEMPLATE, SUMMARY_SYSTEM_PROMPT, TRIP_SUMMARY_TEMPERATURE
 
 
 # Create an instance of the Azure OpenAI client
@@ -21,7 +21,7 @@ def generate_trip_summary(client, trip_data):
     conversation = [
         {
             "role": "system",
-            "content": SUMMARY_SYSTEM_PROMPT,
+            "content": f"{SUMMARY_SYSTEM_PROMPT}{MARKDOWN_OUTPUT_TEMPLATE}",
         },
         {
             "role": "user",
