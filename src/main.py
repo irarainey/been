@@ -1,163 +1,140 @@
-import re
 import os
 import sys
 import glob
 import json
 import argparse
+import logging
 from openai import AzureOpenAI
-from markitdown import MarkItDown
-from geopy.geocoders import AzureMaps
 from dotenv import load_dotenv
+from utils import MaskSensitiveDataFilter
+from metadata import extract_metadata
 
 # Load environment variables
 load_dotenv()
 
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
-# Convert degrees, minutes, seconds to decimal degrees
-def dms_to_decimal(dms_str):
-    pattern = r"(\d+) deg (\d+)' (\d+\.?\d*)\"? ([NSEW])"
-    matches = re.findall(pattern, dms_str)
-
-    decimal_coords = []
-
-    for match in matches:
-        degrees, minutes, seconds, direction = match
-        degrees = float(degrees)
-        minutes = float(minutes) / 60
-        seconds = float(seconds) / 3600
-
-        decimal_degree = degrees + minutes + seconds
-
-        if direction in ["S", "W"]:
-            decimal_degree = -decimal_degree
-
-        decimal_coords.append(decimal_degree)
-
-    return decimal_coords
+# Add filter to mask sensitive data
+logging.getLogger().addFilter(MaskSensitiveDataFilter())
 
 
-# Parse images in a directory to extract metadata
-def parse_images(directory, client):
+# Parse images from a specified directory for metadata
+def parse_image_metadata(directory, ai_client):
+    metadata_output = []
 
-    markitdown = MarkItDown()
-    markitdown_ai = MarkItDown(llm_client=client, llm_model="gpt-4o")
-    output = []
-    pattern = os.path.join(directory, "**", "*.jpg")
-    jpg_files = glob.glob(pattern, recursive=True)
+    # Find all image files in the directory
+    image_file_pattern = os.path.join(directory, "**", "*.jpg")
+    image_files = glob.glob(image_file_pattern, recursive=True)
 
-    for jpg_file in jpg_files:
-        print(f"Processing {os.path.basename(jpg_file)}...")
-        result = markitdown.convert(jpg_file)
+    # Iterate over each image file and extract metadata
+    for image in image_files:
+        logging.info(f"Processing {os.path.basename(image)}...")
 
-        date_pattern = r"DateTimeOriginal:\s*([^\n]+)"
-        when_taken = re.search(date_pattern, result.text_content)
+        # Extract metadata from the image
+        image_metadata = extract_metadata(image, ai_client)
 
-        gps_pattern = r"GPSPosition:\s*([^\n]+)"
-        gps_position = re.search(gps_pattern, result.text_content)
-        decimal_coords = dms_to_decimal(gps_position.group(1))
+        # If metadata is found, add it to the output
+        if image_metadata:
+            metadata_output.append(image_metadata)
 
-        geolocator = AzureMaps(os.getenv("AZURE_MAPS_KEY"))
-        location = geolocator.reverse(f"{decimal_coords[0]}, {decimal_coords[1]}")
-
-        # Save the original stderr and redirect it to /dev/null to suppress prompt showing
-        original_stderr = sys.stderr
-        sys.stderr = open(os.devnull, "w")
-
-        result = markitdown_ai.convert(
-            jpg_file,
-            llm_prompt=f"""
-                You are an individual looking back at a trip you have taken by reviewing the photographs.
-                Write a paragraph for this image that describes the scene.
-                Only use the latitude and longitude coordinates ({decimal_coords[0]},{decimal_coords[1]})
-                and the town or city from the address ({location}) as a reference for it's geographic location.
-                Do not include the coordinates in the output.
-                Do include the name of the city or town the image is from.
-                If you cannot determine the city or town then do not make it up just exclude it.
-            """,
-            llm_temperature=0.5,
-        )
-
-        sys.stderr.close()
-        sys.stderr = original_stderr
-
-        description = ""
-        pattern = r"# Description:\s*(.*)"
-        match = re.search(pattern, result.text_content, re.DOTALL)
-        if match:
-            description = match.group(1).strip()
-
-        output.append(
-            {
-                "filename": os.path.basename(jpg_file),
-                "location": {
-                    "latitude": decimal_coords[0],
-                    "longitude": decimal_coords[1],
-                    "address": location.address,
-                    "url": f"https://www.bing.com/maps?cp={decimal_coords[0]}~{decimal_coords[1]}&lvl=16",
-                },
-                "when": when_taken.group(1),
-                "description": description,
-            }
-        )
-
-    return output
+    # Return the metadata output
+    return metadata_output
 
 
-if __name__ == "__main__":
+# Main function
+def main():
+    # Parse command-line arguments
     parser = argparse.ArgumentParser(description="Parse images from a specified path.")
+
+    # Add argument for the path to the directory containing images
     parser.add_argument(
         "path", type=str, help="The path to the directory containing images"
     )
     args = parser.parse_args()
     directory = args.path
 
+    # Check if the directory value has been provided
+    if not directory:
+        parser.error("The path to the directory containing images must be provided.")
+
+    # Check if the directory exists
+    if not os.path.isdir(directory):
+        parser.error(f"The directory '{directory}' does not exist.")
+
+    # Check if Azure OpenAI environment variables are set
+    if not os.getenv("AZURE_OPENAI_ENDPOINT") or not os.getenv("AZURE_OPENAI_API_KEY"):
+        logging.error("Azure OpenAI environment variables not set.")
+        sys.exit(1)
+
+    # Initialize the Azure OpenAI client
     client = AzureOpenAI(
         azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
         api_key=os.getenv("AZURE_OPENAI_API_KEY"),
         api_version="2024-08-01-preview",
     )
 
-    print("Parsing images...")
-    image_data = parse_images(directory, client)
+    # Parse image metadata
+    logging.info("Parsing image metadata...")
+    image_data = parse_image_metadata(directory, client)
 
-    print("Sorting images by date taken...")
+    logging.info("Sorting images by date taken...")
     sorted_by_date = sorted(image_data, key=lambda x: x["when"])
 
-    print("Creating summary of trips...")
-
+    # Define a conversation prompt to generate the markdown summary
     conversation = [
         {
             "role": "system",
-            "content": "You are a helpful travel writing assistant. Only output the markdown content.",
+            "content": """
+                You are a helpful travel writing assistant creating a summary of trips from descriptions of each image.
+                Create the output in markdown format and only output the markdown content.
+                The markdown created must follow these rules:
+                - Contain a top-level heading with the year or year span of the trips.
+                - Order the trips chronologically by date taken of all images for that trip to a country within now more
+                then a fourteen day period and create a separate sub-heading and section for each trip.
+                - Create sub-headings for each trip with the country of the location and the dates of that trip.
+                - Every trip must include, below the sub-heading, a summary of the entire trip to that location
+                referencing all the images. This summary should be descriptive and more than a single sentence.
+                - Do not include the word Summary in the output or as a heading.
+                - The image itself.
+                - The single sentence description of the image as a caption that includes the date and location it was
+                taken as well as a URL to the location on a map as provided in the JSON data.
+                - Do not include the word caption in the image caption.
+                - Do not surround the image caption with quotation marks.
+                - Do not begin the image caption with 'This image shows'.
+                - Do not format the image caption using a bullet point or list.
+                """,
         },
         {
             "role": "user",
             "content": f"""
-            Given the following JSON journey data, collate information from each country and trip and create a summary of each trip.
+            Given the following JSON journey data, collate information from each country and trip to create a summary
+            of each trip.
             ```json
             {json.dumps(sorted_by_date, indent=4)}
             ```
-            The markdown should contain:
-            - A top-level heading with the year or years of the trips.
-            - Chronologically order the trips by date taken of all images for that trip to that country and create a section for each trip.
-            - If the date of the images in close geographic proximity span more than fourteen days then create a separate section for each trip.
-            - Create sub-headings for the country of the location with the dates of that trip.
-            - Every trip must inclulde, below the sub-heading, a summary of the entire trip to that location referencing all the images. This summary should be descriptive and more than a single sentence.
-            - The image.
-            - The single sentence description of the image as a caption that includes the date and location it was taken as well as a URL to the location on a map as provided in the JSON data. Do not include the word caption in the output.
-            - Do not format the caption using a bullet point or list.
-            Create the output in markdown format.
         """,
         },
     ]
 
+    # Generate the summary using the Azure OpenAI API
+    logging.info("Generating summary of trips...")
     response = client.chat.completions.create(
         model="gpt-4o",
         messages=conversation,
     )
 
+    # Extract the completion text from the response
     completion_text = response.choices[0].message.content
 
-    output_file = f"{directory}/summary.md"
-    with open(output_file, "w") as file:
+    # Write the markdown summary to a markdown file
+    output_markdown_file = os.path.join(directory, "summary.md")
+    with open(output_markdown_file, "w") as file:
         file.write(completion_text)
+
+
+# Entry point of the script
+if __name__ == "__main__":
+    main()
