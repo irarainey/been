@@ -4,7 +4,11 @@ Been is a simple tool to create a travel journal using photographs taken from pl
 
 An example of the output of the tool can be seen in the [example summary](/images/summary.md) file in the images directory within this project.
 
-To run the tool you first need to copy and rename the `.env.sample` file to `.env` and populate the values with your own Azure Maps and OpenAI credentials.
+## Running
+
+This project contains a devcontainer with all the required dependencies to run the tool. Clone this repository locally, and open in Visual Studio Code. You will be prompted to open the project in a devcontainer, which will install all the required dependencies, and run `poetry install` to install the required Python packages.
+
+To run the tool you first need to copy and rename the `.env.sample` file to `.env` and populate the values with your own Azure Maps and Azure OpenAI credentials. This tool requires a `gpt-4o` model to perform the image analysis.
 
 ```bash
 AZURE_MAPS_KEY=<Azure Maps key>
