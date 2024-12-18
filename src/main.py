@@ -1,54 +1,47 @@
 import os
 import sys
 import glob
-import json
 import argparse
 import logging
-from openai import AzureOpenAI
 from dotenv import load_dotenv
-from utils import MaskSensitiveDataFilter
-from metadata import extract_metadata
-from constants import GPT_MODEL, GPT_API_VERSION, SUMMARY_SYSTEM_PROMPT
-from utils import write_markdown_summary
+from logging_filter import MaskSensitiveDataFilter
+from constants import GPT_API_VERSION, OUTPUT_MARKDOWN_FILE
+from open_ai import create_open_ai_client, generate_trip_summary
+from summary import generate_image_summary
 
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
-)
-
-# Add filter to mask sensitive data
-logging.getLogger().addFilter(MaskSensitiveDataFilter())
-
-
-# Parse images from a specified directory for metadata
-def parse_image_metadata(directory, ai_client):
-    metadata_output = []
+# Process images from a specified directory for metadata and generate a summary
+def process_images(client, directory):
+    trip_summaries = []
 
     # Find all image files in the directory
     image_file_pattern = os.path.join(directory, "**", "*.jpg")
     image_files = glob.glob(image_file_pattern, recursive=True)
 
-    # Iterate over each image file and extract metadata
+    # Iterate over each image file in the directory
     for image in image_files:
         logging.info(f"Processing {os.path.basename(image)}...")
 
-        # Extract metadata from the image
-        image_metadata = extract_metadata(image, ai_client)
+        # Extract metadata from the image and generate a summary
+        image_summary = generate_image_summary(client, image)
 
-        # If metadata is found, add it to the output
-        if image_metadata:
-            metadata_output.append(image_metadata)
+        # If summary is generated, add it to the trip summary list
+        if image_summary:
+            trip_summaries.append(image_summary)
 
-    # Return the metadata output
-    return metadata_output
+    # Return the trip summary list
+    return trip_summaries
+
+
+# Write the markdown summary to a file
+def write_markdown_summary(directory, content):
+    markdown_file = os.path.join(directory, OUTPUT_MARKDOWN_FILE)
+    with open(markdown_file, "w") as file:
+        file.write(content)
 
 
 # Main function
 def main():
-    # Load environment variables
-    load_dotenv()
-
     # Parse command-line arguments
     parser = argparse.ArgumentParser(description="Parse images from a specified path.")
 
@@ -67,6 +60,17 @@ def main():
     if not os.path.isdir(directory):
         parser.error(f"The directory '{directory}' does not exist.")
 
+    # Configure logging
+    logging.basicConfig(
+        level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+    )
+
+    # Add filter to mask sensitive data
+    logging.getLogger().addFilter(MaskSensitiveDataFilter())
+
+    # Load environment variables
+    load_dotenv()
+
     # Check if Azure OpenAI environment variables are set
     if (
         not os.getenv("AZURE_OPENAI_ENDPOINT")
@@ -76,51 +80,27 @@ def main():
         logging.error("Azure OpenAI environment variables not set.")
         sys.exit(1)
 
-    # Initialize the Azure OpenAI client
-    client = AzureOpenAI(
-        azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
-        api_key=os.getenv("AZURE_OPENAI_API_KEY"),
-        api_version=GPT_API_VERSION,
-    )
+    # Create an instance of the Azure OpenAI client
+    client = create_open_ai_client(os.getenv("AZURE_OPENAI_ENDPOINT"),
+                                   os.getenv("AZURE_OPENAI_API_KEY"),
+                                   GPT_API_VERSION)
 
     # Parse image metadata
     logging.info("Parsing image metadata...")
-    image_data = parse_image_metadata(directory, client)
+    image_data = process_images(client, directory)
 
     logging.info("Sorting images by date taken...")
     sorted_by_date = sorted(image_data, key=lambda x: x["when"])
 
-    # Define a conversation prompt to generate the markdown summary
-    conversation = [
-        {
-            "role": "system",
-            "content": SUMMARY_SYSTEM_PROMPT,
-        },
-        {
-            "role": "user",
-            "content": f"""
-                Given the following JSON journey data, collate information from each country and trip to create a
-                summary of each trip.
-                ```json
-                {json.dumps(sorted_by_date, indent=4)}
-                ```
-            """,
-            "temperature": 0.3,
-        },
-    ]
-
     # Generate the summary using the Azure OpenAI API
     logging.info("Generating summary of trips...")
-    response = client.chat.completions.create(
-        model=GPT_MODEL,
-        messages=conversation,
-    )
-
-    # Extract the completion text from the response
-    markdown_content = response.choices[0].message.content
+    markdown_content = generate_trip_summary(client, sorted_by_date)
 
     # Write the markdown summary to a file
     write_markdown_summary(directory, markdown_content)
+
+    # And we're done!
+    logging.info("Complete! Markdown summary generated successfully")
 
 
 # Entry point of the script

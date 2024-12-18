@@ -28,5 +28,11 @@ SUMMARY_SYSTEM_PROMPT = """
                 - Do not format the image caption using a bullet point or list.
                 """
 
+# Image summary temperature
+IMAGE_SUMMARY_TEMPERATURE = 0.3
+
+# Trip summary temperature
+TRIP_SUMMARY_TEMPERATURE = 0.3
+
 # The output markdown file
 OUTPUT_MARKDOWN_FILE = "summary.md"

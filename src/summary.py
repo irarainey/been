@@ -4,12 +4,40 @@ import logging
 import re
 from markitdown import MarkItDown
 from geopy.geocoders import AzureMaps
-from utils import dms_to_decimal
-from constants import GPT_MODEL
+from constants import GPT_MODEL, IMAGE_SUMMARY_TEMPERATURE
 
 
-# Extract metadata from an image file
-def extract_metadata(image_file, client):
+# Reverse geocode the coordinates to get the location
+def get_location(decimal_coords):
+    maps = AzureMaps(os.getenv("AZURE_MAPS_KEY"))
+    return maps.reverse(f"{decimal_coords[0]}, {decimal_coords[1]}")
+
+
+# Convert degrees, minutes, seconds (DMS) coordinates to decimal degrees
+def dms_to_decimal(dms_str):
+    pattern = r"(\d+) deg (\d+)' (\d+\.?\d*)\"? ([NSEW])"
+    matches = re.findall(pattern, dms_str)
+
+    decimal_coords = []
+
+    for match in matches:
+        degrees, minutes, seconds, direction = match
+        degrees = float(degrees)
+        minutes = float(minutes) / 60
+        seconds = float(seconds) / 3600
+
+        decimal_degree = degrees + minutes + seconds
+
+        if direction in ["S", "W"]:
+            decimal_degree = -decimal_degree
+
+        decimal_coords.append(decimal_degree)
+
+    return decimal_coords
+
+
+# Extract metadata and generate a summary for an image
+def generate_image_summary(client, image_file):
     try:
         # Create a MarkItDown instance to extract metadata from the image
         markitdown = MarkItDown()
@@ -41,8 +69,7 @@ def extract_metadata(image_file, client):
         )
 
         # Reverse geocode the coordinates to get the location
-        geolocator = AzureMaps(os.getenv("AZURE_MAPS_KEY"))
-        location = geolocator.reverse(f"{decimal_coords[0]}, {decimal_coords[1]}")
+        location = get_location(decimal_coords)
 
         logging.info(
             f"Extracted location: {location} from {os.path.basename(image_file)}"
@@ -69,7 +96,7 @@ def extract_metadata(image_file, client):
                 Do include the name of the city or town the image is from.
                 If you cannot determine the city or town then do not make it up just exclude it.
             """,
-            llm_temperature=0.3,
+            llm_temperature=IMAGE_SUMMARY_TEMPERATURE,
         )
 
         # Restore stderr
@@ -82,6 +109,7 @@ def extract_metadata(image_file, client):
         description_match = re.search(
             description_pattern, result.text_content, re.DOTALL
         )
+
         if description_match:
             description = description_match.group(1).strip()
             logging.info(
