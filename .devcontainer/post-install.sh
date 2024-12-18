@@ -6,4 +6,4 @@ poetry install
 
 # Install exiftool
 sudo apt update
-sudo apt install exiftool -y
+sudo apt install exiftool figlet -y
