@@ -6,7 +6,7 @@ An example of the output of the tool can be seen in the [example summary](/trips
 
 ## Generating a travel summary
 
-This project contains a devcontainer with all the required dependencies to run the tool. Clone this repository locally, and open in Visual Studio Code. You will be prompted to open the project in a devcontainer, which will install all the required dependencies, and run `poetry install` to install the required Python packages.
+This project contains a devcontainer with all the required dependencies to run the tool. Clone this repository locally, and open in Visual Studio Code. You will be prompted to open the project in a devcontainer, which will install all the required dependencies, and run `poetry install` to install the required Python packages. Once open switch to the Python virtual environment using `poetry shell`.
 
 To run the tool you first need to copy and rename the `.env.sample` file to `.env` and populate the values with your own Azure Maps and Azure OpenAI credentials. This tool requires a `gpt-4o` model to perform the image analysis.
 
