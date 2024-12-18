@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "been"
 version = "0.1.0"
-description = "Been"
+description = "A tool create a travel journal from photographs using OpenAI."
 authors = ["Ira Rainey"]
 readme = "README.md"
 license = "MIT"
