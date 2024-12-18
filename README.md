@@ -4,7 +4,7 @@ Been is a simple tool to create a travel journal using photographs taken from pl
 
 An example of the output of the tool can be seen in the [example summary](/images/summary.md) file in the images directory within this project.
 
-## Generating a summary
+## Generating a travel summary
 
 This project contains a devcontainer with all the required dependencies to run the tool. Clone this repository locally, and open in Visual Studio Code. You will be prompted to open the project in a devcontainer, which will install all the required dependencies, and run `poetry install` to install the required Python packages.
 
