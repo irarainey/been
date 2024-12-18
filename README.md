@@ -2,7 +2,7 @@
 
 Been is a simple tool to create a travel journal using photographs taken from places you have visited. The tool uses the EXIF data from the photographs, Azure Maps to reverse geocode the location, and Azure OpenAI to generate a summaries each photograph and of the journey as a whole using the images in the folder.
 
-An example of the output of the tool can be seen in the [example summary](../been/images/summary.md) file in the images directory within this project.
+An example of the output of the tool can be seen in the [example summary](/images/summary.md) file in the images directory within this project.
 
 To run the tool you first need to copy and rename the `.env.sample` file to `.env` and populate the values with your own Azure Maps and OpenAI credentials.
 
