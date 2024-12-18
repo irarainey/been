@@ -16,7 +16,7 @@ AZURE_OPENAI_ENDPOINT=<Base URL for the OpenAI API>
 AZURE_OPENAI_API_KEY=<OpenAI API key>
 ```
 
-Once these values have been populated you can run the tool with the `been.sh` script from the root of the project. You will need to specify the path to the folder containing the images you wish to summarise. The tool will then create a summary of the journey using the images in the folder. The summary will be saved in the same folder as the images. If no path is supplied the default path of `./images` will be used, as defined within this project.
+Once these values have been populated you can run the tool with the `been.sh` script from the root of the project. You will need to specify the path to the folder containing the images you wish to summarise. The tool will then create a summary of the journey using the images in the folder. The summary will be saved in the same folder as the images. If no path is supplied the default path of `./trips` will be used, as defined within this project.
 
 ```bash
 ./been.sh /path/to/folder
