@@ -8,10 +8,9 @@ from openai import AzureOpenAI
 from dotenv import load_dotenv
 from utils import MaskSensitiveDataFilter
 from metadata import extract_metadata
-from constants import GPT_MODEL, GPT_API_VERSION, OUTPUT_MARKDOWN_FILE, SUMMARY_SYSTEM_PROMPT
+from constants import GPT_MODEL, GPT_API_VERSION, SUMMARY_SYSTEM_PROMPT
+from utils import write_markdown_summary
 
-# Load environment variables
-load_dotenv()
 
 # Configure logging
 logging.basicConfig(
@@ -47,6 +46,9 @@ def parse_image_metadata(directory, ai_client):
 
 # Main function
 def main():
+    # Load environment variables
+    load_dotenv()
+
     # Parse command-line arguments
     parser = argparse.ArgumentParser(description="Parse images from a specified path.")
 
@@ -66,7 +68,11 @@ def main():
         parser.error(f"The directory '{directory}' does not exist.")
 
     # Check if Azure OpenAI environment variables are set
-    if not os.getenv("AZURE_OPENAI_ENDPOINT") or not os.getenv("AZURE_OPENAI_API_KEY"):
+    if (
+        not os.getenv("AZURE_OPENAI_ENDPOINT")
+        or not os.getenv("AZURE_OPENAI_API_KEY")
+        or not os.getenv("AZURE_MAPS_KEY")
+    ):
         logging.error("Azure OpenAI environment variables not set.")
         sys.exit(1)
 
@@ -111,12 +117,10 @@ def main():
     )
 
     # Extract the completion text from the response
-    completion_text = response.choices[0].message.content
+    markdown_content = response.choices[0].message.content
 
-    # Write the markdown summary to a markdown file
-    output_markdown_file = os.path.join(directory, OUTPUT_MARKDOWN_FILE)
-    with open(output_markdown_file, "w") as file:
-        file.write(completion_text)
+    # Write the markdown summary to a file
+    write_markdown_summary(directory, markdown_content)
 
 
 # Entry point of the script

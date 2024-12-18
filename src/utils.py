@@ -1,5 +1,7 @@
+import os
 import re
 import logging
+from constants import OUTPUT_MARKDOWN_FILE
 
 
 # Define a custom logging filter to mask sensitive data
@@ -33,3 +35,10 @@ def dms_to_decimal(dms_str):
         decimal_coords.append(decimal_degree)
 
     return decimal_coords
+
+
+# Write the markdown summary to a markdown file
+def write_markdown_summary(directory, content):
+    output_markdown_file = os.path.join(directory, OUTPUT_MARKDOWN_FILE)
+    with open(output_markdown_file, "w") as file:
+        file.write(content)
