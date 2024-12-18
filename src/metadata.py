@@ -5,6 +5,7 @@ import re
 from markitdown import MarkItDown
 from geopy.geocoders import AzureMaps
 from utils import dms_to_decimal
+from constants import GPT_MODEL
 
 
 # Extract metadata from an image file
@@ -56,7 +57,7 @@ def extract_metadata(image_file, client):
         sys.stderr = open(os.devnull, "w")
 
         # Create a MarkItDown instance to generate a description for the image
-        markitdown_ai = MarkItDown(llm_client=client, llm_model="gpt-4o")
+        markitdown_ai = MarkItDown(llm_client=client, llm_model=GPT_MODEL)
         result = markitdown_ai.convert(
             image_file,
             llm_prompt=f"""

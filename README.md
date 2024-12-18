@@ -1,9 +1,19 @@
 # Been
 
-A simple tool to use AI to create summaries of place you have been from photographs taken at those locations.
+Been is a simple tool to create a travel journal using photographs taken from places you have visited. The tool uses the EXIF data from the photographs, Azure Maps to reverse geocode the location, and Azure OpenAI to generate a summaries each photograph and of the journey as a whole using the images in the folder.
 
-To run the tool you need to specify the path to the folder containing the images you want to summarise. The tool will then create a summary of the journey using the images in the folder.
+An example of the output of the tool can be seen in the [example summary](../been/images/summary.md) file in the images directory within this project.
+
+To run the tool you first need to copy and rename the `.env.sample` file to `.env` and populate the values with your own Azure Maps and OpenAI credentials.
 
 ```bash
-python src/main.py /workspaces/been/images
+AZURE_MAPS_KEY=<Azure Maps key>
+AZURE_OPENAI_ENDPOINT=<Base URL for the OpenAI API>
+AZURE_OPENAI_API_KEY=<OpenAI API key>
+```
+
+Once these values have been populated you can run the tool with the `been.sh` script from the root of the project. You will need to specify the path to the folder containing the images you wish to summarise. The tool will then create a summary of the journey using the images in the folder. The summary will be saved in the same folder as the images. If no path is supplied the default path of `./images` will be used, as defined within this project.
+
+```bash
+./been.sh /path/to/folder
 ```

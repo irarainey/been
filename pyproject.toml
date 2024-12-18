@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "been"
 version = "0.1.0"
-description = "A tool create a travel journal from photographs using OpenAI."
+description = "A tool to create a travel journal using photographs taken from places you have been."
 authors = ["Ira Rainey"]
 readme = "README.md"
 license = "MIT"
@@ -12,7 +12,7 @@ python = "^3.11"
 geopy = "^2.4.1"
 python-dotenv = "^1.0.1"
 openai = "^1.57.4"
-markitdown = { path = "packages/markitdown-0.0.1a1-py3-none-any.whl" }
+markitdown = "^0.0.1a3"
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.10.0"

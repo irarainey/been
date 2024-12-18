@@ -8,6 +8,7 @@ from openai import AzureOpenAI
 from dotenv import load_dotenv
 from utils import MaskSensitiveDataFilter
 from metadata import extract_metadata
+from constants import GPT_MODEL, GPT_API_VERSION, OUTPUT_MARKDOWN_FILE, SUMMARY_SYSTEM_PROMPT
 
 # Load environment variables
 load_dotenv()
@@ -73,7 +74,7 @@ def main():
     client = AzureOpenAI(
         azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
         api_key=os.getenv("AZURE_OPENAI_API_KEY"),
-        api_version="2024-08-01-preview",
+        api_version=GPT_API_VERSION,
     )
 
     # Parse image metadata
@@ -87,42 +88,24 @@ def main():
     conversation = [
         {
             "role": "system",
-            "content": """
-                You are a helpful travel writing assistant creating a summary of trips from descriptions of each image.
-                Create the output in markdown format and only output the markdown content.
-                The markdown created must follow these rules:
-                - Contain a top-level heading with the year or year span of the trips.
-                - Order the trips chronologically by date taken of all images for that trip to a country within now more
-                then a fourteen day period and create a separate sub-heading and section for each trip.
-                - Create sub-headings for each trip with the country of the location and the dates of that trip.
-                - Every trip must include, below the sub-heading, a summary of the entire trip to that location
-                referencing all the images. This summary should be descriptive and more than a single sentence.
-                - Do not include the word Summary in the output or as a heading.
-                - The image itself.
-                - The single sentence description of the image as a caption that includes the date and location it was
-                taken as well as a URL to the location on a map as provided in the JSON data.
-                - Do not include the word caption in the image caption.
-                - Do not surround the image caption with quotation marks.
-                - Do not begin the image caption with 'This image shows'.
-                - Do not format the image caption using a bullet point or list.
-                """,
+            "content": SUMMARY_SYSTEM_PROMPT,
         },
         {
             "role": "user",
             "content": f"""
-            Given the following JSON journey data, collate information from each country and trip to create a summary
-            of each trip.
-            ```json
-            {json.dumps(sorted_by_date, indent=4)}
-            ```
-        """,
+                Given the following JSON journey data, collate information from each country and trip to create a
+                summary of each trip.
+                ```json
+                {json.dumps(sorted_by_date, indent=4)}
+                ```
+            """,
         },
     ]
 
     # Generate the summary using the Azure OpenAI API
     logging.info("Generating summary of trips...")
     response = client.chat.completions.create(
-        model="gpt-4o",
+        model=GPT_MODEL,
         messages=conversation,
     )
 
@@ -130,7 +113,7 @@ def main():
     completion_text = response.choices[0].message.content
 
     # Write the markdown summary to a markdown file
-    output_markdown_file = os.path.join(directory, "summary.md")
+    output_markdown_file = os.path.join(directory, OUTPUT_MARKDOWN_FILE)
     with open(output_markdown_file, "w") as file:
         file.write(completion_text)
 

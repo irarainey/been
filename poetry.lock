@@ -880,12 +880,13 @@ six = ">=1.15,<2"
 
 [[package]]
 name = "markitdown"
-version = "0.0.1a1"
+version = "0.0.1a3"
 description = ""
 optional = false
 python-versions = ">=3.10"
 files = [
-    {file = "markitdown-0.0.1a1-py3-none-any.whl", hash = "sha256:8a17e831e9dbcbdf16bf307a1985ced3b115f8dfc2273d0c3064df0941a34f83"},
+    {file = "markitdown-0.0.1a3-py3-none-any.whl", hash = "sha256:6efcab2f05714675486dc2ddf912415734b1caa0343f73f75d852046f04e5f37"},
+    {file = "markitdown-0.0.1a3.tar.gz", hash = "sha256:f6c8f5f7f5541e91c6c535218318968fefd71e2a6faa0eb782b3492e04cd023d"},
 ]
 
 [package.dependencies]
@@ -894,6 +895,7 @@ charset-normalizer = "*"
 mammoth = "*"
 markdownify = "*"
 numpy = "*"
+openai = "*"
 openpyxl = "*"
 pandas = "*"
 pathvalidate = "*"
@@ -904,10 +906,6 @@ python-pptx = "*"
 requests = "*"
 speechrecognition = "*"
 youtube-transcript-api = "*"
-
-[package.source]
-type = "file"
-url = "packages/markitdown-0.0.1a1-py3-none-any.whl"
 
 [[package]]
 name = "mccabe"
@@ -1811,4 +1809,4 @@ requests = "*"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "e1689c14072514b3370d1d2412d6a7b55a7b0b7ceb0d911ccc0597beb361bd05"
+content-hash = "d63cf98128ac16bab9c0a24cba4e7009f8eb8bb3291a5cc9dedac2130ff01c46"
