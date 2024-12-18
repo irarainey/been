@@ -1,10 +1,10 @@
-# Been
+# Been 🗺️
 
 Been is a simple tool to create a travel journal using photographs taken from places you have visited. The tool uses the EXIF data from the photographs, Azure Maps to reverse geocode the location, and Azure OpenAI to generate a summaries each photograph and of the journey as a whole using the images in the folder.
 
 An example of the output of the tool can be seen in the [example summary](/images/summary.md) file in the images directory within this project.
 
-## Running
+## Generating a summary
 
 This project contains a devcontainer with all the required dependencies to run the tool. Clone this repository locally, and open in Visual Studio Code. You will be prompted to open the project in a devcontainer, which will install all the required dependencies, and run `poetry install` to install the required Python packages.
 
