@@ -3,34 +3,43 @@ import logging
 import os
 from openai import AzureOpenAI
 from constants import GPT_MODEL, MARKDOWN_OUTPUT_TEMPLATE, SUMMARY_SYSTEM_PROMPT, TRIP_SUMMARY_TEMPERATURE
+from typing import Any, Dict
 
 
 # Create an instance of the Azure OpenAI client
-def create_open_ai_client(endpoint, key, version):
-    # Initialize the Azure OpenAI client
-    client = AzureOpenAI(
-        azure_endpoint=endpoint,
-        api_key=key,
-        api_version=version,
-    )
+def create_open_ai_client(endpoint: str, key: str, version: str) -> AzureOpenAI:
+    try:
+        # Initialize the Azure OpenAI client
+        client = AzureOpenAI(
+            azure_endpoint=endpoint,
+            api_key=key,
+            api_version=version,
+        )
+        return client
+    except Exception as e:
+        logging.error(f"Failed to create OpenAI client: {e}")
+        raise
 
-    return client
 
-
-# Generate a summary from the trip data
-def generate_trip_summary(client, trip_data, full_path):
-
-    # Check if a context.txt file exists in the same directory as the images and if so, read the contents
-    context = ""
-    logging.info(f"Checking for context file in directory: {full_path}...")
+# Read context from file
+def read_context_file(full_path: str) -> str:
     context_file = os.path.join(full_path, "context.txt")
     if os.path.exists(context_file):
         logging.info("Reading context file...")
-        with open(context_file, "r") as file:
-            context = file.read()
-
-    if not context:
+        try:
+            with open(context_file, "r") as file:
+                return file.read()
+        except Exception as e:
+            logging.error(f"Error reading context file: {e}")
+            return ""
+    else:
         logging.info("No context file found.")
+        return ""
+
+
+# Generate a summary from the trip data
+def generate_trip_summary(client: AzureOpenAI, trip_data: Dict[str, Any], full_path: str) -> str:
+    context = read_context_file(full_path)
 
     # Define a conversation prompt to generate the markdown summary
     conversation = [
@@ -57,9 +66,12 @@ def generate_trip_summary(client, trip_data, full_path):
 
     # Generate the summary using the Azure OpenAI API
     logging.info("Creating trip summary...")
-    response = client.chat.completions.create(
-        model=GPT_MODEL,
-        messages=conversation,
-    )
-
-    return response.choices[0].message.content
+    try:
+        response = client.chat.completions.create(
+            model=GPT_MODEL,
+            messages=conversation,
+        )
+        return response.choices[0].message.content
+    except Exception as e:
+        logging.error(f"Failed to generate trip summary: {e}")
+        raise
