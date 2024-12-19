@@ -37,46 +37,46 @@ def dms_to_decimal(dms_str):
 
 
 # Extract metadata and generate a summary for an image
-def generate_image_summary(client, image_file):
+def generate_image_summary(client, image_path):
     try:
         # Create a MarkItDown instance to extract metadata from the image
         markitdown = MarkItDown()
-        result = markitdown.convert(image_file)
+        result = markitdown.convert(image_path)
 
         # Extract the date from the metadata
         date_pattern = r"DateTimeOriginal:\s*([^\n]+)"
         when_taken = re.search(date_pattern, result.text_content)
         if not when_taken:
-            logging.warning(f"Date not found for {image_file}")
+            logging.warning(f"Date not found for {image_path}")
             return None
 
         logging.info(
-            f"Extracted date: {when_taken.group(1)} from {os.path.basename(image_file)}"
+            f"Extracted date: {when_taken.group(1)} from {image_path}"
         )
 
         # Extract the GPS position from the metadata
         gps_pattern = r"GPSPosition:\s*([^\n]+)"
         gps_position = re.search(gps_pattern, result.text_content)
         if not gps_position:
-            logging.warning(f"GPS data not found for {image_file}")
+            logging.warning(f"GPS data not found for {image_path}")
             return None
 
         # Convert the GPS position to decimal coordinates
         decimal_coords = dms_to_decimal(gps_position.group(1))
 
         logging.info(
-            f"Extracted GPS location: {decimal_coords[0]}, {decimal_coords[1]} from {os.path.basename(image_file)}"
+            f"Extracted GPS location: {decimal_coords[0]}, {decimal_coords[1]} from {image_path}"
         )
 
         # Reverse geocode the coordinates to get the location
         location = get_location(decimal_coords)
 
         logging.info(
-            f"Extracted location: {location} from {os.path.basename(image_file)}"
+            f"Extracted location: {location} from {image_path}"
         )
 
         logging.info(
-            f"Generating image summary for {os.path.basename(image_file)}..."
+            f"Generating image summary for {image_path}..."
         )
 
         # Redirect stderr to suppress prompt logging from MarkItDown
@@ -86,17 +86,19 @@ def generate_image_summary(client, image_file):
         # Create a MarkItDown instance to generate a description for the image
         markitdown_ai = MarkItDown(llm_client=client, llm_model=GPT_MODEL)
         result = markitdown_ai.convert(
-            image_file,
+            image_path,
             llm_prompt=f"""
                 You are an individual looking back at a trip you have taken by reviewing the photographs.
                 Write a paragraph for this image that describes the scene.
                 Only use the latitude and longitude coordinates ({decimal_coords[0]},{decimal_coords[1]})
                 and the town or city from the address ({location}) as a reference for it's geographic location.
-                Do not include the coordinates in the output.
                 Do include the name of the city or town the image is from.
                 If you cannot determine the city or town then do not make it up just exclude it.
+                Do not end the paragraph with a full stop.
+                Do not include the coordinates in the output.
             """,
             llm_temperature=IMAGE_SUMMARY_TEMPERATURE,
+            max_tokens=200,
         )
 
         # Restore stderr
@@ -113,12 +115,15 @@ def generate_image_summary(client, image_file):
         if description_match:
             description = description_match.group(1).strip()
             logging.info(
-                f"Generated summary: {description} from {os.path.basename(image_file)}"
+                f"Generated summary: {description} from {image_path}"
             )
+
+        # Get the current working directory to remove from the image reference
+        working_directory = os.getcwd()
 
         # Return the extracted metadata
         return {
-            "filename": os.path.basename(image_file),
+            "filename": image_path.replace(working_directory, ""),
             "location": {
                 "latitude": decimal_coords[0],
                 "longitude": decimal_coords[1],
@@ -129,5 +134,5 @@ def generate_image_summary(client, image_file):
             "caption": description,
         }
     except Exception as e:
-        logging.error(f"Error processing {image_file}: {e}")
+        logging.error(f"Error processing {image_path}: {e}")
         return None

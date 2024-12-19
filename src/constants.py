@@ -14,7 +14,7 @@ SUMMARY_SYSTEM_PROMPT = """
     than a fourteen day period and create a separate sub-heading and section for each trip.
     - Create sub-headings for each trip with the country of the location and the dates of that trip.
     - Do not include an emoji of the country code anywhere in the output.
-    - Include and image of flag file in the `../resources/flags` directory where the filename is the
+    - Include and image of flag file in the `/resources/flags` directory where the filename is the
     ISO 3166-1 alpha-2 code of the country in lowercase with a `.png` extension except if the country
     is Wales, Scotland, or Northern Ireland in which case use gb-wls, gb-sct, gb-nir. For England always
     use gb.png.
@@ -36,11 +36,11 @@ MARKDOWN_OUTPUT_TEMPLATE = """
     Use this template to create the markdown output for each trip:
     Replace the placeholders in {} with the appropriate values from the supplied JSON data:
     ```
-    ## ![{country-name}](../resources/flags/{iso-country-code}.png) {city-or-town} {country-name} ({date-range-of-trip})
+    ## ![{country-name}](/resources/flags/{iso-country-code}.png) {city-or-town} {country-name} ({date-range-of-trip})
     {trip-summary}
 
-    ![{image-filename}]({image-filename})
-    %{image-filename}% - [Map]({url})
+    ![{image-filename}]({full-image-path})
+    %{full-image-path}% - [Map]({url})
     ```
     """
 
@@ -49,6 +49,3 @@ IMAGE_SUMMARY_TEMPERATURE = 0.3
 
 # Trip summary temperature
 TRIP_SUMMARY_TEMPERATURE = 0.3
-
-# The output markdown file
-OUTPUT_MARKDOWN_FILE = "summary.md"

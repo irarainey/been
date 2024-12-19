@@ -8,7 +8,7 @@ poetry shell
 figlet "been"
 
 # Set a base default path
-IMAGE_PATH=./trips
+IMAGE_PATH=/trips
 
 # Check if the user has provided a path
 if [ -z "$1" ]
