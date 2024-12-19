@@ -15,7 +15,9 @@ SUMMARY_SYSTEM_PROMPT = """
     - Create sub-headings for each trip with the country of the location and the dates of that trip.
     - Do not include an emoji of the country code anywhere in the output.
     - Include and image of flag file in the `../resources/flags` directory where the filename is the
-    ISO 3166-1 alpha-2 code of the country in lowercase with a `.png` extension.
+    ISO 3166-1 alpha-2 code of the country in lowercase with a `.png` extension except if the country
+    is Wales, Scotland, or Northern Ireland in which case use gb-wls, gb-sct, gb-nir. For England always
+    use gb.png.
     - Every trip must include, below the sub-heading, a summary of the entire trip to that location
     referencing all the images. This summary should be descriptive and more than a single sentence. It should
     also include some geographical or historical information about the location.
