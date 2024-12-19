@@ -8,10 +8,11 @@ from datetime import datetime
 from constants import GPT_API_VERSION
 from open_ai import create_open_ai_client, generate_trip_summary
 from summary import generate_image_summary
+from typing import List, Dict, Any
 
 
 # Process images from a specified directory for metadata and generate a summary
-def process_images(client, directory):
+def process_images(client, directory: str) -> List[Dict[str, Any]]:
     trip_summaries = []
 
     # Find all image files in the directory
@@ -23,7 +24,11 @@ def process_images(client, directory):
         logging.info(f"Processing {os.path.basename(image)}...")
 
         # Extract metadata from the image and generate a summary
-        image_summary = generate_image_summary(client, image)
+        try:
+            image_summary = generate_image_summary(client, image)
+        except Exception as e:
+            logging.error(f"Failed to generate summary for {image}: {e}")
+            continue
 
         # If summary is generated, add it to the trip summary list
         if image_summary:
@@ -34,20 +39,29 @@ def process_images(client, directory):
 
 
 # Write the markdown summary to a file
-def write_markdown_summary(content):
-    # Get the current timestamp current_timestamp
+def write_markdown_summary(content: str) -> None:
+    # Ensure the output directory exists
+    output_dir = "output"
+    os.makedirs(output_dir, exist_ok=True)
+
+    # Get the current timestamp
     current_timestamp = datetime.now()
 
     # Format the timestamp
     formatted_timestamp = current_timestamp.strftime("%Y%m%d%H%M%S")
     filename = f"summary_{formatted_timestamp}.md"
-    markdown_file = os.path.join("output", filename)
-    with open(markdown_file, "w") as file:
-        file.write(content)
+    markdown_file = os.path.join(output_dir, filename)
+
+    try:
+        with open(markdown_file, "w") as file:
+            file.write(content)
+        logging.info(f"Markdown summary written to {markdown_file}")
+    except Exception as e:
+        logging.error(f"Failed to write markdown summary: {e}")
 
 
 # Main function
-def main():
+def main() -> None:
     # Configure logging
     logging.basicConfig(
         level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
@@ -61,11 +75,14 @@ def main():
         "path", type=str, help="The path to the directory containing images"
     )
     args = parser.parse_args()
-    directory = args.path
+    image_directory = args.path
+
+    # Ensure directory does not start with a slash
+    image_directory = image_directory.lstrip('/')
 
     # Get the current base directory to create a full path
     working_directory = os.getcwd()
-    full_path = f"{working_directory}{directory}"
+    full_path = os.path.join(working_directory, image_directory)
 
     logging.info(f"Processing images in directory: {full_path}...")
 
@@ -86,9 +103,13 @@ def main():
         sys.exit(1)
 
     # Create an instance of the Azure OpenAI client
-    client = create_open_ai_client(os.getenv("AZURE_OPENAI_ENDPOINT"),
-                                   os.getenv("AZURE_OPENAI_API_KEY"),
-                                   GPT_API_VERSION)
+    try:
+        client = create_open_ai_client(os.getenv("AZURE_OPENAI_ENDPOINT"),
+                                       os.getenv("AZURE_OPENAI_API_KEY"),
+                                       GPT_API_VERSION)
+    except Exception as e:
+        logging.error(f"Failed to create OpenAI client: {e}")
+        sys.exit(1)
 
     # Parse image metadata
     logging.info("Parsing image metadata...")
@@ -99,7 +120,11 @@ def main():
 
     # Generate the summary using the Azure OpenAI API
     logging.info("Generating summary of trips...")
-    markdown_content = generate_trip_summary(client, sorted_by_date, full_path)
+    try:
+        markdown_content = generate_trip_summary(client, sorted_by_date, full_path)
+    except Exception as e:
+        logging.error(f"Failed to generate trip summary: {e}")
+        sys.exit(1)
 
     # Parse the markdown to update the image captions
     logging.info("Updating image captions...")
