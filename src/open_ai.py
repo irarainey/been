@@ -1,4 +1,6 @@
 import json
+import logging
+import os
 from openai import AzureOpenAI
 from constants import GPT_MODEL, MARKDOWN_OUTPUT_TEMPLATE, SUMMARY_SYSTEM_PROMPT, TRIP_SUMMARY_TEMPERATURE
 
@@ -16,7 +18,20 @@ def create_open_ai_client(endpoint, key, version):
 
 
 # Generate a summary from the trip data
-def generate_trip_summary(client, trip_data):
+def generate_trip_summary(client, trip_data, full_path):
+
+    # Check if a context.txt file exists in the same directory as the images and if so, read the contents
+    context = ""
+    logging.info(f"Checking for context file in directory: {full_path}...")
+    context_file = os.path.join(full_path, "context.txt")
+    if os.path.exists(context_file):
+        logging.info("Reading context file...")
+        with open(context_file, "r") as file:
+            context = file.read()
+
+    if not context:
+        logging.info("No context file found.")
+
     # Define a conversation prompt to generate the markdown summary
     conversation = [
         {
@@ -31,12 +46,17 @@ def generate_trip_summary(client, trip_data):
                 ```json
                 {json.dumps(trip_data, indent=4)}
                 ```
+                Use this additional context to provide add information:
+                ```text
+                {context}
+                ```
             """,
             "temperature": TRIP_SUMMARY_TEMPERATURE,
         },
     ]
 
     # Generate the summary using the Azure OpenAI API
+    logging.info("Creating trip summary...")
     response = client.chat.completions.create(
         model=GPT_MODEL,
         messages=conversation,

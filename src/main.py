@@ -99,7 +99,7 @@ def main():
 
     # Generate the summary using the Azure OpenAI API
     logging.info("Generating summary of trips...")
-    markdown_content = generate_trip_summary(client, sorted_by_date)
+    markdown_content = generate_trip_summary(client, sorted_by_date, full_path)
 
     # Parse the markdown to update the image captions
     logging.info("Updating image captions...")
