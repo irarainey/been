@@ -1,66 +1,17 @@
 import os
 import logging
 import re
+from typing import List
 from markitdown import MarkItDown
-from azure.core.credentials import AzureKeyCredential
-from azure.maps.search import MapsSearchClient
-from openai import AzureOpenAI
-from constants import GPT_MODEL, IMAGE_SUMMARY_TEMPERATURE
-from typing import Any
-from azure.core.exceptions import HttpResponseError
+from constants import GPT_MODEL, IMAGE_SUMMARY_TEMP, MARKDOWN_TEMPLATE, SUMMARY_SYSTEM_PROMPT, TRIP_SUMMARY_TEMP
+from file_utils import read_file
+from open_ai import OpenAIClient
 from trip_image import Address, TripImage
-from PIL import Image
-from PIL.ExifTags import TAGS
-
-
-# Extract EXIF data from an image file
-def extract_exif(image_path):
-    # Open the image file
-    image = Image.open(image_path)
-
-    # Extract EXIF data
-    exif_data = image._getexif()
-
-    # Convert EXIF data to a readable format
-    exif_dict = {}
-    if exif_data is not None:
-        for tag, value in exif_data.items():
-            tag_name = TAGS.get(tag, tag)
-            exif_dict[tag_name] = value
-
-    return exif_dict
-
-
-# Reverse geocode the coordinates to get the address data
-def get_address(latitude, longitude) -> Any:
-    maps_search_client = MapsSearchClient(credential=AzureKeyCredential(os.getenv("AZURE_MAPS_KEY")))
-    try:
-        result = maps_search_client.get_reverse_geocoding(coordinates=[longitude, latitude])
-        if result.get('features', False):
-            props = result['features'][0].get('properties', {})
-            if props and props.get('address', False):
-                logging.info(props['address'])
-                return props['address']
-            else:
-                logging.info("Address is None")
-                return None
-        else:
-            logging.info("No features available")
-            return None
-    except HttpResponseError as exception:
-        if exception.error is not None:
-            logging.error(f"Error Code: {exception.error.code} - {exception.error.message}")
-        return None
-
-
-# Convert degrees, minutes, seconds (DMS) coordinates to decimal degrees
-def dms_to_decimal(dms):
-    degrees, minutes, seconds = dms
-    return degrees + (minutes / 60.0) + (seconds / 3600.0)
+from utils import dms_to_decimal, extract_exif, get_address, serialise_object
 
 
 # Extract metadata and generate a trip data for an image
-def generate_trip_image_data(client: AzureOpenAI, image_path: str) -> TripImage:
+def generate_trip_image_data(ai_client: OpenAIClient, image_path: str) -> TripImage:
     try:
         # Extract EXIF data from the image
         exif_data = extract_exif(image_path)
@@ -104,7 +55,7 @@ def generate_trip_image_data(client: AzureOpenAI, image_path: str) -> TripImage:
         logging.info(f"Generating image summary for {image_path}...")
 
         # Create a MarkItDown instance to generate a description for the image
-        markitdown_ai = MarkItDown(llm_client=client, llm_model=GPT_MODEL)
+        markitdown_ai = MarkItDown(llm_client=ai_client.client, llm_model=GPT_MODEL)
         exif_data = markitdown_ai.convert(
             image_path,
             llm_prompt=f"""
@@ -117,7 +68,7 @@ def generate_trip_image_data(client: AzureOpenAI, image_path: str) -> TripImage:
                 Do not end the paragraph with a full stop.
                 Do not include the coordinates in the output.
             """,
-            llm_temperature=IMAGE_SUMMARY_TEMPERATURE,
+            llm_temperature=IMAGE_SUMMARY_TEMP,
             max_tokens=200,
         )
 
@@ -150,3 +101,42 @@ def generate_trip_image_data(client: AzureOpenAI, image_path: str) -> TripImage:
     except Exception as e:
         logging.error(f"Error processing {image_path}: {e}")
         return None
+
+
+# Generate an overall summary from the trip data
+def generate_trip_summary(ai_client: OpenAIClient, trip_data: List[TripImage], full_path: str) -> str:
+    # Read the context file to provide additional information
+    context_file = os.path.join(full_path, "context.txt")
+    context = read_file(context_file)
+
+    # Serialize the trip data to JSON
+    trip_data_json = serialise_object(trip_data)
+
+    # Define a conversation prompt to generate the markdown summary
+    conversation = [
+        {
+            "role": "system",
+            "content": f"{SUMMARY_SYSTEM_PROMPT}{MARKDOWN_TEMPLATE}",
+        },
+        {
+            "role": "user",
+            "content": f"""
+                Given the following JSON journey data, collate information from each country and trip to create a
+                summary of each trip.
+                ```json
+                {trip_data_json}
+                ```
+                Use this additional context to provide add information:
+                ```text
+                {context}
+                ```
+            """,
+            "temperature": TRIP_SUMMARY_TEMP,
+        },
+    ]
+
+    # Generate the summary using the Azure OpenAI API
+    logging.info("Creating trip summary...")
+
+    # Return the response from the OpenAI API
+    return ai_client.send_prompt(conversation)

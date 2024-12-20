@@ -1,4 +1,4 @@
-# Define a class to represent an address
+# A class to represent an address
 class Address:
     def __init__(self, latitude: float, longitude: float, address: str, url: str):
         self.latitude: float = latitude
@@ -15,7 +15,7 @@ class Address:
         }
 
 
-# Define a class to represent a trip image
+# A class to represent a trip image
 class TripImage:
     def __init__(self, filename: str, address: Address, when: str, caption: str):
         self.filename: str = filename

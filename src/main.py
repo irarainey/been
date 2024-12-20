@@ -6,10 +6,10 @@ import logging
 from dotenv import load_dotenv
 from datetime import datetime
 from openai import AzureOpenAI
-from constants import GPT_API_VERSION
+from constants import GPT_API_VERSION, OUTPUT_DIR
 from file_utils import write_file
-from open_ai import create_open_ai_client, generate_trip_summary
-from summary import generate_trip_image_data
+from open_ai import OpenAIClient
+from summary import generate_trip_image_data, generate_trip_summary
 from typing import List
 from trip_image import TripImage
 from utils import serialise_object
@@ -86,16 +86,17 @@ def main() -> None:
 
     # Create an instance of the Azure OpenAI client
     try:
-        client = create_open_ai_client(os.getenv("AZURE_OPENAI_ENDPOINT"),
-                                       os.getenv("AZURE_OPENAI_API_KEY"),
-                                       GPT_API_VERSION)
+        ai_client = OpenAIClient(
+            os.getenv("AZURE_OPENAI_ENDPOINT"),
+            os.getenv("AZURE_OPENAI_API_KEY"),
+            GPT_API_VERSION)
     except Exception as e:
         logging.error(f"Failed to create OpenAI client: {e}")
         sys.exit(1)
 
     # Parse image metadata
     logging.info("Parsing image metadata...")
-    image_data = process_trip_images(client, full_path)
+    image_data = process_trip_images(ai_client, full_path)
 
     logging.info("Sorting images by date taken...")
     sorted_by_date = sorted(image_data, key=lambda x: x.when)
@@ -103,7 +104,7 @@ def main() -> None:
     # Generate the summary using the Azure OpenAI API
     logging.info("Generating summary of trips...")
     try:
-        markdown_content = generate_trip_summary(client, sorted_by_date, full_path)
+        markdown_content = generate_trip_summary(ai_client, sorted_by_date, full_path)
     except Exception as e:
         logging.error(f"Failed to generate trip summary: {e}")
         sys.exit(1)
@@ -119,12 +120,15 @@ def main() -> None:
     markdown_filename = f"summary_{current_timestamp}.md"
     trip_data_filename = f"summary_{current_timestamp}.json"
 
+    # Ensure the output directory exists
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+
     # Write the markdown summary to a file
-    write_file(markdown_content, markdown_filename)
+    write_file(markdown_content, os.path.join(OUTPUT_DIR, markdown_filename))
 
     # Write the JSON data to a file
     trip_data_json = serialise_object(sorted_by_date)
-    write_file(trip_data_json, trip_data_filename)
+    write_file(trip_data_json, os.path.join(OUTPUT_DIR, trip_data_filename))
 
     # And we're done!
     logging.info("Complete! Markdown summary generated successfully")

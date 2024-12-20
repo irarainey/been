@@ -32,7 +32,7 @@ SUMMARY_SYSTEM_PROMPT = """
     - Do not format the image caption using a bullet point or list.
     """
 
-MARKDOWN_OUTPUT_TEMPLATE = """
+MARKDOWN_TEMPLATE = """
     Use this template to create the markdown output for each trip:
     Replace the placeholders in {} with the appropriate values from the supplied JSON data:
     ```
@@ -45,7 +45,10 @@ MARKDOWN_OUTPUT_TEMPLATE = """
     """
 
 # Image summary temperature
-IMAGE_SUMMARY_TEMPERATURE = 0.3
+IMAGE_SUMMARY_TEMP = 0.3
 
 # Trip summary temperature
-TRIP_SUMMARY_TEMPERATURE = 0.3
+TRIP_SUMMARY_TEMP = 0.3
+
+# Output directory
+OUTPUT_DIR = "output"
