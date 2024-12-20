@@ -125,7 +125,7 @@ def generate_image_summary(client: AzureOpenAI, image_path: str) -> Dict[str, An
                 "latitude": decimal_coords[0],
                 "longitude": decimal_coords[1],
                 "address": location.address,
-                "url": f"https://www.bing.com/maps?cp={decimal_coords[0]}~{decimal_coords[1]}&lvl=16",
+                "url": "https://www.google.com/maps/place/{decimal_coords[0]},{decimal_coords[1]}",
             },
             "when": when_taken.group(1),
             "caption": description,
