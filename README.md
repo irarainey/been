@@ -24,4 +24,4 @@ If you wish to add additional context to the summary you can create a `context.t
 ./been.sh /path/to/folder
 ```
 
-> ***NOTE:** Images without EXIF GPS or date time data will be ignored by the tool. If you have images you wish to include the EXIF data should be edited to add the missing data. This can be performed using a tool such as [GeoSetter](https://geosetter.de/en/main-en/) or [ExifToolGui](https://github.com/FrankBijnen/ExifToolGui/).*
+> ***NOTE:** Images without EXIF GPS or date time data will be ignored by the tool. If you have images you wish to include, the EXIF data can be edited to add the missing values. This can be performed using a tool such as [GeoSetter](https://geosetter.de/en/main-en/) or [ExifToolGui](https://github.com/FrankBijnen/ExifToolGui/).*
