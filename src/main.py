@@ -7,14 +7,17 @@ from dotenv import load_dotenv
 from datetime import datetime
 from openai import AzureOpenAI
 from constants import GPT_API_VERSION
+from file_utils import write_file
 from open_ai import create_open_ai_client, generate_trip_summary
-from summary import generate_image_summary
-from typing import List, Dict, Any
+from summary import generate_trip_image_data
+from typing import List
+from trip_image import TripImage
+from utils import serialise_object
 
 
-# Process images from a specified directory for metadata and generate a summary
-def process_images(client: AzureOpenAI, directory: str) -> List[Dict[str, Any]]:
-    trip_summaries = []
+# Process trip images from the specified directory for metadata and generate a summary
+def process_trip_images(client: AzureOpenAI, directory: str) -> List[TripImage]:
+    trip_images: List[TripImage] = []
 
     # Find all image files in the directory
     image_file_pattern = os.path.join(directory, "**", "*.jpg")
@@ -26,39 +29,17 @@ def process_images(client: AzureOpenAI, directory: str) -> List[Dict[str, Any]]:
 
         # Extract metadata from the image and generate a summary
         try:
-            image_summary = generate_image_summary(client, image)
+            trip_image = generate_trip_image_data(client, image)
         except Exception as e:
             logging.error(f"Failed to generate summary for {image}: {e}")
             continue
 
         # If summary is generated, add it to the trip summary list
-        if image_summary:
-            trip_summaries.append(image_summary)
+        if trip_image:
+            trip_images.append(trip_image)
 
     # Return the trip summary list
-    return trip_summaries
-
-
-# Write the markdown summary to a file
-def write_markdown_summary(content: str) -> None:
-    # Ensure the output directory exists
-    output_dir = "output"
-    os.makedirs(output_dir, exist_ok=True)
-
-    # Get the current timestamp
-    current_timestamp = datetime.now()
-
-    # Format the timestamp
-    formatted_timestamp = current_timestamp.strftime("%Y%m%d%H%M%S")
-    filename = f"summary_{formatted_timestamp}.md"
-    markdown_file = os.path.join(output_dir, filename)
-
-    try:
-        with open(markdown_file, "w") as file:
-            file.write(content)
-        logging.info(f"Markdown summary written to {markdown_file}")
-    except Exception as e:
-        logging.error(f"Failed to write markdown summary: {e}")
+    return trip_images
 
 
 # Main function
@@ -114,10 +95,10 @@ def main() -> None:
 
     # Parse image metadata
     logging.info("Parsing image metadata...")
-    image_data = process_images(client, full_path)
+    image_data = process_trip_images(client, full_path)
 
     logging.info("Sorting images by date taken...")
-    sorted_by_date = sorted(image_data, key=lambda x: x["when"])
+    sorted_by_date = sorted(image_data, key=lambda x: x.when)
 
     # Generate the summary using the Azure OpenAI API
     logging.info("Generating summary of trips...")
@@ -130,11 +111,20 @@ def main() -> None:
     # Parse the markdown to update the image captions
     logging.info("Updating image captions...")
     for image in sorted_by_date:
-        logging.info(f"Updating captions for {image['filename']} to {image['caption']}")
-        markdown_content = markdown_content.replace(f"%{image['filename']}%", f"{image['caption']}")
+        logging.info(f"Updating captions for {image.filename} to {image.caption}")
+        markdown_content = markdown_content.replace(f"%{image.filename}%", f"{image.caption}")
+
+    # Get the current timestamp
+    current_timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+    markdown_filename = f"summary_{current_timestamp}.md"
+    trip_data_filename = f"summary_{current_timestamp}.json"
 
     # Write the markdown summary to a file
-    write_markdown_summary(markdown_content)
+    write_file(markdown_content, markdown_filename)
+
+    # Write the JSON data to a file
+    trip_data_json = serialise_object(sorted_by_date)
+    write_file(trip_data_json, trip_data_filename)
 
     # And we're done!
     logging.info("Complete! Markdown summary generated successfully")

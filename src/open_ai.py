@@ -1,9 +1,11 @@
-import json
 import logging
 import os
 from openai import AzureOpenAI
 from constants import GPT_MODEL, MARKDOWN_OUTPUT_TEMPLATE, SUMMARY_SYSTEM_PROMPT, TRIP_SUMMARY_TEMPERATURE
-from typing import Any, Dict
+from typing import List
+from file_utils import read_file
+from trip_image import TripImage
+from utils import serialise_object
 
 
 # Create an instance of the Azure OpenAI client
@@ -21,25 +23,13 @@ def create_open_ai_client(endpoint: str, key: str, version: str) -> AzureOpenAI:
         raise
 
 
-# Read context from file
-def read_context_file(full_path: str) -> str:
-    context_file = os.path.join(full_path, "context.txt")
-    if os.path.exists(context_file):
-        logging.info("Reading context file...")
-        try:
-            with open(context_file, "r") as file:
-                return file.read()
-        except Exception as e:
-            logging.error(f"Error reading context file: {e}")
-            return ""
-    else:
-        logging.info("No context file found.")
-        return ""
-
-
 # Generate a summary from the trip data
-def generate_trip_summary(client: AzureOpenAI, trip_data: Dict[str, Any], full_path: str) -> str:
-    context = read_context_file(full_path)
+def generate_trip_summary(client: AzureOpenAI, trip_data: List[TripImage], full_path: str) -> str:
+    context_file = os.path.join(full_path, "context.txt")
+    context = read_file(context_file)
+
+    # Serialize the trip data to JSON
+    trip_data_json = serialise_object(trip_data)
 
     # Define a conversation prompt to generate the markdown summary
     conversation = [
@@ -53,7 +43,7 @@ def generate_trip_summary(client: AzureOpenAI, trip_data: Dict[str, Any], full_p
                 Given the following JSON journey data, collate information from each country and trip to create a
                 summary of each trip.
                 ```json
-                {json.dumps(trip_data, indent=4)}
+                {trip_data_json}
                 ```
                 Use this additional context to provide add information:
                 ```text
