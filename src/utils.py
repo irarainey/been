@@ -1,9 +1,11 @@
-import json
-import logging
 import os
-from typing import Any, List
+import json
+import base64
+import logging
 from PIL import Image
+from typing import Any, List
 from PIL.ExifTags import TAGS
+from mimetypes import guess_type
 from azure.core.credentials import AzureKeyCredential
 from azure.maps.search import MapsSearchClient
 from azure.core.exceptions import HttpResponseError
@@ -64,3 +66,43 @@ def get_address(latitude, longitude) -> Any:
         if exception.error is not None:
             logging.error(f"Error Code: {exception.error.code} - {exception.error.message}")
         return None
+
+
+# Convert a local image to a data URL
+def local_image_to_data_url(image_path):
+    mime_type, _ = guess_type(image_path)
+
+    if mime_type is None:
+        mime_type = "application/octet-stream"
+
+    with open(image_path, "rb") as image_file:
+        base64_encoded_data = base64.b64encode(image_file.read()).decode("utf-8")
+
+    return f"data:{mime_type};base64,{base64_encoded_data}"
+
+
+# Read contents from file
+def read_file(filename: str) -> str:
+    # Check if the file exists
+    if os.path.exists(filename):
+        logging.info(f"Reading file {filename}...")
+        try:
+            with open(filename, "r") as file:
+                return file.read()
+        except Exception as e:
+            logging.error(f"Error reading file {filename}: {e}")
+            return ""
+    else:
+        logging.info(f"No file found: {filename}.")
+        return ""
+
+
+# Write contents to a file
+def write_file(content: str, filename: str) -> None:
+    # Write the contents to a file
+    try:
+        with open(filename, "w") as file:
+            file.write(content)
+        logging.info(f"Contents written to {filename}")
+    except Exception as e:
+        logging.error(f"Failed to write contents to file: {e}")

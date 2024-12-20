@@ -1,17 +1,21 @@
 import os
 import logging
-import re
 from typing import List
-from markitdown import MarkItDown
-from constants import GPT_MODEL, IMAGE_SUMMARY_TEMP, MARKDOWN_TEMPLATE, SUMMARY_SYSTEM_PROMPT, TRIP_SUMMARY_TEMP
-from file_utils import read_file
+from constants import (
+    IMAGE_SUMMARY_TEMP,
+    IMAGE_SYSTEM_PROMPT,
+    MARKDOWN_TEMPLATE,
+    SUMMARY_SYSTEM_PROMPT,
+    SUMMARY_USER_PROMPT,
+    TRIP_SUMMARY_TEMP)
+from utils import read_file
 from open_ai import OpenAIClient
 from trip_image import Address, TripImage
-from utils import dms_to_decimal, extract_exif, get_address, serialise_object
+from utils import dms_to_decimal, extract_exif, get_address, local_image_to_data_url, serialise_object
 
 
-# Extract metadata and generate a trip data for an image
-def generate_trip_image_data(ai_client: OpenAIClient, image_path: str) -> TripImage:
+# Generate a summary for an image
+def generate_image_summary(ai_client: OpenAIClient, image_path: str) -> TripImage:
     try:
         # Extract EXIF data from the image
         exif_data = extract_exif(image_path)
@@ -54,32 +58,31 @@ def generate_trip_image_data(ai_client: OpenAIClient, image_path: str) -> TripIm
 
         logging.info(f"Generating image summary for {image_path}...")
 
-        # Create a MarkItDown instance to generate a description for the image
-        markitdown_ai = MarkItDown(llm_client=ai_client.client, llm_model=GPT_MODEL)
-        exif_data = markitdown_ai.convert(
-            image_path,
-            llm_prompt=f"""
-                You are an individual looking back at a trip you have taken by reviewing the photographs.
-                Write a paragraph for this image that describes the scene.
-                Only use the latitude and longitude coordinates ({latitude},{longitude})
-                and the town or city from the address ({address}) as a reference for its geographic location.
-                Do include the name of the city or town the image is from.
-                If you cannot determine the city or town then do not make it up just exclude it.
-                Do not end the paragraph with a full stop.
-                Do not include the coordinates in the output.
-            """,
-            llm_temperature=IMAGE_SUMMARY_TEMP,
-            max_tokens=200,
-        )
+        conversation = [
+            {
+                "role": "system",
+                "content": IMAGE_SYSTEM_PROMPT.format(latitude=latitude, longitude=longitude, address=address)
+            },
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": "Create a summary for this image."
+                    },
+                    {
+                        "type": "image_url",
+                        "image_url": {
+                            "url": local_image_to_data_url(image_path)
+                        },
+                    },
+                ],
+                "temperature": IMAGE_SUMMARY_TEMP,
+                "max_tokens": 200,
+            },
+        ]
 
-        # Extract the description from the AI-generated text
-        description = ""
-        description_pattern = r"# Description:\s*(.*)"
-        description_match = re.search(description_pattern, exif_data.text_content, re.DOTALL)
-
-        if description_match:
-            description = description_match.group(1).strip()
-            logging.info(f"Generated summary: {description} from {image_path}")
+        summary = ai_client.send_prompt(conversation)
 
         # Get the current working directory to remove from the image reference
         working_directory = os.getcwd()
@@ -93,7 +96,7 @@ def generate_trip_image_data(ai_client: OpenAIClient, image_path: str) -> TripIm
                 url=f"https://www.google.com/maps/place/{latitude},{longitude}",
             ),
             when=when_taken,
-            caption=description,
+            caption=summary.rstrip('.'),
         )
 
         # Return the trip image object
@@ -120,17 +123,7 @@ def generate_trip_summary(ai_client: OpenAIClient, trip_data: List[TripImage], f
         },
         {
             "role": "user",
-            "content": f"""
-                Given the following JSON journey data, collate information from each country and trip to create a
-                summary of each trip.
-                ```json
-                {trip_data_json}
-                ```
-                Use this additional context to provide add information:
-                ```text
-                {context}
-                ```
-            """,
+            "content": SUMMARY_USER_PROMPT.format(trip_data_json=trip_data_json, context=context),
             "temperature": TRIP_SUMMARY_TEMP,
         },
     ]

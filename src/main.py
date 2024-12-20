@@ -7,9 +7,9 @@ from dotenv import load_dotenv
 from datetime import datetime
 from openai import AzureOpenAI
 from constants import GPT_API_VERSION, OUTPUT_DIR
-from file_utils import write_file
+from utils import write_file
 from open_ai import OpenAIClient
-from summary import generate_trip_image_data, generate_trip_summary
+from summaries import generate_image_summary, generate_trip_summary
 from typing import List
 from trip_image import TripImage
 from utils import serialise_object
@@ -29,7 +29,7 @@ def process_trip_images(client: AzureOpenAI, directory: str) -> List[TripImage]:
 
         # Extract metadata from the image and generate a summary
         try:
-            trip_image = generate_trip_image_data(client, image)
+            trip_image = generate_image_summary(client, image)
         except Exception as e:
             logging.error(f"Failed to generate summary for {image}: {e}")
             continue

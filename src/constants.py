@@ -2,6 +2,17 @@
 GPT_MODEL = "gpt-4o"
 GPT_API_VERSION = "2024-08-01-preview"
 
+# System prompt for the image description call
+IMAGE_SYSTEM_PROMPT = """
+    You are an individual looking back at a trip you have taken by reviewing the photographs.
+    Write a paragraph for this image that describes the scene.
+    Only use the latitude and longitude coordinates ({latitude},{longitude})
+    and the town or city from the address ({address}) as a reference for its geographic location.
+    Do include the name of the city or town the image is from.
+    If you cannot determine the city or town then do not make it up just exclude it.
+    Do not include the coordinates in the output.
+    """
+
 # System prompt for the overall summary call
 SUMMARY_SYSTEM_PROMPT = """
     You are a helpful travel writing assistant creating a summary of trips from descriptions of each image.
@@ -32,6 +43,20 @@ SUMMARY_SYSTEM_PROMPT = """
     - Do not format the image caption using a bullet point or list.
     """
 
+# User prompt for the overall summary call
+SUMMARY_USER_PROMPT = """
+    Given the following JSON journey data, collate information from each country and trip to create a
+    summary of each trip.
+    ```json
+    {trip_data_json}
+    ```
+    Use this additional context to provide add information:
+    ```text
+    {context}
+    ```
+    """
+
+# Template for the markdown output
 MARKDOWN_TEMPLATE = """
     Use this template to create the markdown output for each trip:
     Replace the placeholders in {} with the appropriate values from the supplied JSON data:
