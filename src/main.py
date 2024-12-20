@@ -5,6 +5,7 @@ import argparse
 import logging
 from dotenv import load_dotenv
 from datetime import datetime
+from openai import AzureOpenAI
 from constants import GPT_API_VERSION
 from open_ai import create_open_ai_client, generate_trip_summary
 from summary import generate_image_summary
@@ -12,7 +13,7 @@ from typing import List, Dict, Any
 
 
 # Process images from a specified directory for metadata and generate a summary
-def process_images(client, directory: str) -> List[Dict[str, Any]]:
+def process_images(client: AzureOpenAI, directory: str) -> List[Dict[str, Any]]:
     trip_summaries = []
 
     # Find all image files in the directory

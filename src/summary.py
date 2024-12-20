@@ -4,6 +4,7 @@ import logging
 import re
 from markitdown import MarkItDown
 from geopy.geocoders import AzureMaps
+from openai import AzureOpenAI
 from constants import GPT_MODEL, IMAGE_SUMMARY_TEMPERATURE
 from typing import List, Dict, Any
 
@@ -42,7 +43,7 @@ def dms_to_decimal(dms_str: str) -> List[float]:
 
 
 # Extract metadata and generate a summary for an image
-def generate_image_summary(client: Any, image_path: str) -> Dict[str, Any]:
+def generate_image_summary(client: AzureOpenAI, image_path: str) -> Dict[str, Any]:
     try:
         # Create a MarkItDown instance to extract metadata from the image
         markitdown = MarkItDown()
