@@ -16,7 +16,7 @@ from utils import serialise_object
 
 
 # Process trip images from the specified directory for metadata and generate a summary
-def process_trip_images(client: AzureOpenAI, directory: str) -> List[TripImage]:
+def process_trip_images(client: AzureOpenAI, directory: str, map_key: str) -> List[TripImage]:
     trip_images: List[TripImage] = []
 
     # Find all image files in the directory
@@ -29,7 +29,7 @@ def process_trip_images(client: AzureOpenAI, directory: str) -> List[TripImage]:
 
         # Extract metadata from the image and generate a summary
         try:
-            trip_image = generate_image_summary(client, image)
+            trip_image = generate_image_summary(client, image, map_key)
         except Exception as e:
             logging.error(f"Failed to generate summary for {image}: {e}")
             continue
@@ -81,7 +81,7 @@ def main() -> None:
         or not os.getenv("AZURE_OPENAI_API_KEY")
         or not os.getenv("AZURE_MAPS_KEY")
     ):
-        logging.error("Azure OpenAI environment variables not set.")
+        logging.error("Required environment variables not set.")
         sys.exit(1)
 
     # Create an instance of the Azure OpenAI client
@@ -96,7 +96,7 @@ def main() -> None:
 
     # Parse image metadata
     logging.info("Parsing image metadata...")
-    image_data = process_trip_images(ai_client, full_path)
+    image_data = process_trip_images(ai_client, full_path, os.getenv("AZURE_MAPS_KEY"))
 
     logging.info("Sorting images by date taken...")
     sorted_by_date = sorted(image_data, key=lambda x: x.when)

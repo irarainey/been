@@ -15,7 +15,7 @@ from utils import dms_to_decimal, extract_exif, get_address, local_image_to_data
 
 
 # Generate a summary for an image
-def generate_image_summary(ai_client: OpenAIClient, image_path: str) -> TripImage:
+def generate_image_summary(ai_client: OpenAIClient, image_path: str, map_key: str) -> TripImage:
     try:
         # Extract EXIF data from the image
         exif_data = extract_exif(image_path)
@@ -48,7 +48,7 @@ def generate_image_summary(ai_client: OpenAIClient, image_path: str) -> TripImag
         logging.info(f"Extracted GPS information: {latitude}, {longitude} from {image_path}")
 
         # Reverse geocode the coordinates to get the location
-        location = get_address(latitude, longitude)
+        location = get_address(latitude, longitude, map_key)
         if not location:
             logging.warning(f"Location not found for coordinates: {latitude}, {longitude}")
             return None

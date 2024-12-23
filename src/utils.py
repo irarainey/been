@@ -23,13 +23,13 @@ def serialise_object(objects: List[Any]) -> str:
 
 
 # Convert degrees, minutes, seconds (DMS) coordinates to decimal degrees
-def dms_to_decimal(dms):
+def dms_to_decimal(dms: Any) -> float:
     degrees, minutes, seconds = dms
     return degrees + (minutes / 60.0) + (seconds / 3600.0)
 
 
 # Extract EXIF data from an image file
-def extract_exif(image_path):
+def extract_exif(image_path: str) -> dict:
     # Open the image file
     image = Image.open(image_path)
 
@@ -47,8 +47,8 @@ def extract_exif(image_path):
 
 
 # Reverse geocode the coordinates to get the address data from Azure Maps
-def get_address(latitude, longitude) -> Any:
-    maps_search_client = MapsSearchClient(credential=AzureKeyCredential(os.getenv("AZURE_MAPS_KEY")))
+def get_address(latitude: float, longitude: float, map_key: str) -> Any:
+    maps_search_client = MapsSearchClient(credential=AzureKeyCredential(map_key))
     try:
         result = maps_search_client.get_reverse_geocoding(coordinates=[longitude, latitude])
         if result.get('features', False):
@@ -69,7 +69,7 @@ def get_address(latitude, longitude) -> Any:
 
 
 # Convert a local image to a data URL
-def local_image_to_data_url(image_path):
+def local_image_to_data_url(image_path: str) -> str:
     mime_type, _ = guess_type(image_path)
 
     if mime_type is None:
