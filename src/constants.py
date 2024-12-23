@@ -4,68 +4,97 @@ GPT_API_VERSION = "2024-08-01-preview"
 
 # System prompt for the image description call
 IMAGE_SYSTEM_PROMPT = """
-    You are an individual looking back at a trip you have taken by reviewing the photographs.
+    You are an individual looking back at a trip you have taken by reviewing your photographs.
     Write a paragraph for this image that describes the scene.
     Only use the latitude and longitude coordinates ({latitude},{longitude})
     and the town or city from the address ({address}) as a reference for its geographic location.
     Do include the name of the city or town the image is from.
     If you cannot determine the city or town then do not make it up just exclude it.
     Do not include the coordinates in the output.
+    Do not start the output with 'This image' or 'This photo' or 'This photograph'.
     """
 
-# System prompt for the overall summary call
-SUMMARY_SYSTEM_PROMPT = """
-    You are a helpful travel writing assistant creating a summary of trips from descriptions of each image.
-    Create the output in markdown format.
-    Only output the markdown content.
-    Do not include the ```markdown or ``` tags in the output.
-    Additionally the markdown created must follow these rules:
-    - Contain a top-level heading with the year or year span of the trips.
-    - Order the trips chronologically by date taken of all images for that trip to a country within no more
-    than a fourteen day period and create a separate sub-heading and section for each trip.
-    - Create sub-headings for each trip with the country of the location and the dates of that trip.
-    - Do not include an emoji of the country code anywhere in the output.
-    - Include and image of flag file in the `/resources/flags` directory where the filename is the
-    ISO 3166-1 alpha-2 code of the country in lowercase with a `.png` extension except if the country
-    is Wales, Scotland, or Northern Ireland in which case use gb-wls, gb-sct, gb-nir. For England always
-    use gb.png.
-    - Every trip must include, below the sub-heading, a summary of the entire trip to that location
-    referencing all the images. This summary should be descriptive and more than a single sentence. It should
-    also include some geographical or historical information about the location.
-    - The output must contain the image itself.
-    - Use the image filename as provided in the JSON data as the caption below the image and include the date and
-    location it was taken as well as a URL to the location on a map as provided in the JSON data.
-    - Do not include the word Summary in the output or as a heading.
-    - Do not include the word caption in the image caption.
-    - Do not end the image caption with a period.
-    - Do not surround the image caption with quotation marks.
-    - Do not begin the image caption with 'This image shows' or 'This photograph'.
-    - Do not format the image caption using a bullet point or list.
-    """
-
-# User prompt for the overall summary call
-SUMMARY_USER_PROMPT = """
-    Given the following JSON journey data, collate information from each country and trip to create a
-    summary of each trip.
-    ```json
-    {trip_data_json}
-    ```
-    Use this additional context to provide add information:
+# User prompt for the image description call
+IMAGE_USER_PROMPT = """
+    Create a summary description for this image.
+    Use this additional context where relevant for information to describe the image as part of a trip:
     ```text
     {context}
     ```
     """
 
-# Template for the markdown output
-MARKDOWN_TEMPLATE = """
-    Use this template to create the markdown output for each trip:
-    Replace the placeholders in {} with the appropriate values from the supplied JSON data:
-    ```
-    ## ![{country-name}](/resources/flags/{iso-country-code}.png) {city-or-town} {country-name} ({date-range-of-trip})
-    {trip-summary}
+# System prompt for the overall summary call
+SUMMARY_SYSTEM_PROMPT = """
+    You are an individual looking back at all trips you have taken and writing a journal summary from descriptions
+    of each image and relevant geographic and historic country information.
+    Create an overall summary of each trip taken by combining the caption from each image any relevant geographical
+    or historical country information together with any additional context for that trip as provided.
+    Only output the summary for each trip and do not include the image captions.
+    Output plain text only.
+    """
 
-    ![{image-filename}]({full-image-path})
-    %{full-image-path}% - [Map]({url})
+# User prompt for the overall summary call
+SUMMARY_USER_PROMPT = """
+    Given the following JSON journey data, collate information from each image caption to create a
+    summary of each trip.
+    ```json
+    {trip_data_json}
+    ```
+    Use this additional context where relevant to provide add information for the trip:
+    ```text
+    {context}
+    ```
+    """
+
+# System prompt for the collation call
+COLLATION_SYSTEM_PROMPT = """
+    You are a JSON data processor. Process the supplied JSON to collate images into trips.
+    Do not exclude any images from the output.
+    Only output valid JSON data.
+    All output must be in as an array of JSON data following the structure:
+    ```json
+    [
+        {
+        "country": "{country-name}",
+        "date_from": "{start-of-date-range-of-trip}",
+        "date_to": "{end-of-date-range-of-trip}",
+        "summary": "",
+        "images": [
+            {
+                "filename": "{image-filename}",
+                "location": {
+                    "latitude": {latitude},
+                    "longitude": {longitude},
+                    "address": {
+                        "country": "{country-name}",
+                        "iso": "{iso-code}",
+                        "admin_districts": ["{admin-district}"],
+                        "locality": "{locality}",
+                        "formatted_address": "{formatted-address}"
+                        },
+                    },
+                "date": "{date}"
+                "caption": "",
+            ]
+        }
+    ]
+    ```
+    The JSON must follow these rules:
+    - Order the trips chronologically by date taken of all images for that trip to a country within no more
+    than a fourteen day period and create a separate sub-heading and section for each trip.
+    - Do not include ```json or ``` in the output. Only output the JSON data.
+    - Format all dates in the JSON data as YYYY-MM-DD HH:MM:SS.
+    """
+
+# User prompt for the collation call
+COLLATION_USER_PROMPT = """
+    Using this JSON data, collate information from each trip to create an ordered collection of images per trip.
+    ```json
+    {trip_data_json}
+    ```
+    Use this additional context where relevant for information to collate trips:
+    ```text
+    {context}
     ```
     """
 
@@ -77,3 +106,6 @@ TRIP_SUMMARY_TEMP = 0.3
 
 # Output directory
 OUTPUT_DIR = "output"
+
+# Google Maps base URL
+MAP_BASE = "https://www.google.com/maps/place/"

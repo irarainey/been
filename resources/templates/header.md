@@ -1,1 +1,1 @@
-# Travel Journey for {{ year }}
+# Travel Journal for {{ year }}

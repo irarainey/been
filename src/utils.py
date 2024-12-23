@@ -11,14 +11,21 @@ from azure.maps.search import MapsSearchClient
 from azure.core.exceptions import HttpResponseError
 
 
+# Custom serializer for JSON serialisation
+def custom_serialiser(obj):
+    if hasattr(obj, "to_dict"):
+        return obj.to_dict()
+    elif isinstance(obj, list):
+        return [custom_serialiser(item) for item in obj]
+    elif isinstance(obj, dict):
+        return {key: custom_serialiser(value) for key, value in obj.items()}
+    else:
+        return obj
+
+
 # Serialise a list of objects to JSON
-def serialise_objects(objects: List[Any]) -> str:
-    # Convert each object instance to a dictionary
-    obj_dict = [obj.to_dict() for obj in objects]
-
-    # Serialize the list of dictionaries to JSON
-    obj_json = json.dumps(obj_dict, indent=4)
-
+def serialise(objects: List[Any]) -> str:
+    obj_json = json.dumps(objects, default=custom_serialiser, indent=4)
     return obj_json
 
 

@@ -1,2 +1,2 @@
-![{{image-path}}]({{image-path}})
-{{image-caption}} - [Map]({{map-url}})
+![{{ image-path }}]({{ image-path }})
+{{ image-caption }} - [Map]({{ map-url }})
