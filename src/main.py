@@ -11,7 +11,7 @@ from open_ai import OpenAIClient
 from summaries import generate_image_summary, generate_trip_summary
 from typing import List
 from trip_image import TripImage
-from utils import serialise_object
+from utils import serialise_objects
 
 
 # Main function
@@ -117,7 +117,7 @@ def main() -> None:
     write_file(markdown_content, os.path.join(OUTPUT_DIR, f"{output_filename}.md"))
 
     # Write the JSON data to a file
-    trip_data_json = serialise_object(sorted_by_date)
+    trip_data_json = serialise_objects(sorted_by_date)
     write_file(trip_data_json, os.path.join(OUTPUT_DIR, f"{output_filename}.json"))
 
     # And we're done!

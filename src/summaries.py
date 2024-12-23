@@ -11,14 +11,19 @@ from constants import (
 from utils import read_file
 from open_ai import OpenAIClient
 from trip_image import Address, TripImage
-from utils import dms_to_decimal, extract_exif, get_address, local_image_to_data_url, serialise_object
+from utils import (
+    convert_dms_to_decimal,
+    extract_exif_data,
+    get_address,
+    convert_local_image_to_data_url,
+    serialise_objects)
 
 
 # Generate a summary for an image
 def generate_image_summary(ai_client: OpenAIClient, image_path: str, map_key: str) -> TripImage:
     try:
         # Extract EXIF data from the image
-        exif_data = extract_exif(image_path)
+        exif_data = extract_exif_data(image_path)
 
         # Get the date from the metadata
         when_taken = exif_data.get("DateTimeOriginal", None)
@@ -39,8 +44,8 @@ def generate_image_summary(ai_client: OpenAIClient, image_path: str, map_key: st
         longitude_dms = gps_data[4]
 
         # Convert the GPS position to decimal coordinates
-        latitude = dms_to_decimal(latitude_dms)
-        longitude = dms_to_decimal(longitude_dms)
+        latitude = convert_dms_to_decimal(latitude_dms)
+        longitude = convert_dms_to_decimal(longitude_dms)
 
         # Check the direction of the coordinates
         latitude *= 1 if gps_data[1] == 'N' else -1
@@ -73,7 +78,7 @@ def generate_image_summary(ai_client: OpenAIClient, image_path: str, map_key: st
                     {
                         "type": "image_url",
                         "image_url": {
-                            "url": local_image_to_data_url(image_path)
+                            "url": convert_local_image_to_data_url(image_path)
                         },
                     },
                 ],
@@ -113,7 +118,7 @@ def generate_trip_summary(ai_client: OpenAIClient, trip_data: List[TripImage], f
     context = read_file(context_file)
 
     # Serialize the trip data to JSON
-    trip_data_json = serialise_object(trip_data)
+    trip_data_json = serialise_objects(trip_data)
 
     # Define a conversation prompt to generate the markdown summary
     conversation = [

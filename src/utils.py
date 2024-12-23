@@ -11,8 +11,8 @@ from azure.maps.search import MapsSearchClient
 from azure.core.exceptions import HttpResponseError
 
 
-# Serialise an object to JSON
-def serialise_object(objects: List[Any]) -> str:
+# Serialise a list of objects to JSON
+def serialise_objects(objects: List[Any]) -> str:
     # Convert each object instance to a dictionary
     obj_dict = [obj.to_dict() for obj in objects]
 
@@ -23,13 +23,13 @@ def serialise_object(objects: List[Any]) -> str:
 
 
 # Convert degrees, minutes, seconds (DMS) coordinates to decimal degrees
-def dms_to_decimal(dms: Any) -> float:
+def convert_dms_to_decimal(dms: Any) -> float:
     degrees, minutes, seconds = dms
     return degrees + (minutes / 60.0) + (seconds / 3600.0)
 
 
 # Extract EXIF data from an image file
-def extract_exif(image_path: str) -> dict:
+def extract_exif_data(image_path: str) -> dict:
     # Open the image file
     image = Image.open(image_path)
 
@@ -69,7 +69,7 @@ def get_address(latitude: float, longitude: float, map_key: str) -> Any:
 
 
 # Convert a local image to a data URL
-def local_image_to_data_url(image_path: str) -> str:
+def convert_local_image_to_data_url(image_path: str) -> str:
     mime_type, _ = guess_type(image_path)
 
     if mime_type is None:
