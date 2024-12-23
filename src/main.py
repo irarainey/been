@@ -5,7 +5,6 @@ import argparse
 import logging
 from dotenv import load_dotenv
 from datetime import datetime
-from openai import AzureOpenAI
 from constants import GPT_API_VERSION, OUTPUT_DIR
 from utils import write_file
 from open_ai import OpenAIClient
@@ -13,33 +12,6 @@ from summaries import generate_image_summary, generate_trip_summary
 from typing import List
 from trip_image import TripImage
 from utils import serialise_object
-
-
-# Process trip images from the specified directory for metadata and generate a summary
-def process_trip_images(client: AzureOpenAI, directory: str, map_key: str) -> List[TripImage]:
-    trip_images: List[TripImage] = []
-
-    # Find all image files in the directory
-    image_file_pattern = os.path.join(directory, "**", "*.jpg")
-    image_files = glob.glob(image_file_pattern, recursive=True)
-
-    # Iterate over each image file in the directory
-    for image in image_files:
-        logging.info(f"Processing {os.path.basename(image)}...")
-
-        # Extract metadata from the image and generate a summary
-        try:
-            trip_image = generate_image_summary(client, image, map_key)
-        except Exception as e:
-            logging.error(f"Failed to generate summary for {image}: {e}")
-            continue
-
-        # If summary is generated, add it to the trip summary list
-        if trip_image:
-            trip_images.append(trip_image)
-
-    # Return the trip summary list
-    return trip_images
 
 
 # Main function
@@ -50,13 +22,13 @@ def main() -> None:
     )
 
     # Parse command-line arguments
-    parser = argparse.ArgumentParser(description="Parse images from a specified path.")
+    args_parser = argparse.ArgumentParser(description="Parse images from a specified path.")
 
     # Add argument for the path to the directory containing images
-    parser.add_argument(
+    args_parser.add_argument(
         "path", type=str, help="The path to the directory containing images"
     )
-    args = parser.parse_args()
+    args = args_parser.parse_args()
     image_directory = args.path
 
     # Ensure directory does not start with a slash
@@ -70,7 +42,7 @@ def main() -> None:
 
     # Check if the directory exists
     if not os.path.isdir(full_path):
-        parser.error(f"The path '{full_path}' does not exist.")
+        args_parser.error(f"The path '{full_path}' does not exist.")
 
     # Load environment variables
     load_dotenv()
@@ -95,18 +67,37 @@ def main() -> None:
         sys.exit(1)
 
     # Parse image metadata
-    logging.info("Parsing image metadata...")
-    image_data = process_trip_images(ai_client, full_path, os.getenv("AZURE_MAPS_KEY"))
+    logging.info("Processing trip images...")
+    trip_images: List[TripImage] = []
 
-    logging.info("Sorting images by date taken...")
-    sorted_by_date = sorted(image_data, key=lambda x: x.when)
+    # Find all image files in the directory
+    image_file_pattern = os.path.join(full_path, "**", "*.jpg")
+    image_files = glob.glob(image_file_pattern, recursive=True)
+
+    # Iterate over each image file in the directory
+    for image in image_files:
+        logging.info(f"Processing {os.path.basename(image)}...")
+
+        # Extract metadata from the image and generate a summary
+        try:
+            trip_image = generate_image_summary(ai_client, image, os.getenv("AZURE_MAPS_KEY"))
+        except Exception as e:
+            logging.error(f"Failed to generate summary for {image}: {e}")
+            continue
+
+        # If summary is generated, add it to the trip summary list
+        if trip_image:
+            trip_images.append(trip_image)
+
+    logging.info("Sorting trip data by date image taken...")
+    sorted_by_date = sorted(trip_images, key=lambda x: x.when)
 
     # Generate the summary using the Azure OpenAI API
-    logging.info("Generating summary of trips...")
+    logging.info("Generating overall summary of trips...")
     try:
         markdown_content = generate_trip_summary(ai_client, sorted_by_date, full_path)
     except Exception as e:
-        logging.error(f"Failed to generate trip summary: {e}")
+        logging.error(f"Failed to generate overal summary of trips: {e}")
         sys.exit(1)
 
     # Parse the markdown to update the image captions
@@ -117,21 +108,20 @@ def main() -> None:
 
     # Get the current timestamp
     current_timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-    markdown_filename = f"summary_{current_timestamp}.md"
-    trip_data_filename = f"summary_{current_timestamp}.json"
+    output_filename = f"summary_{current_timestamp}"
 
     # Ensure the output directory exists
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 
     # Write the markdown summary to a file
-    write_file(markdown_content, os.path.join(OUTPUT_DIR, markdown_filename))
+    write_file(markdown_content, os.path.join(OUTPUT_DIR, f"{output_filename}.md"))
 
     # Write the JSON data to a file
     trip_data_json = serialise_object(sorted_by_date)
-    write_file(trip_data_json, os.path.join(OUTPUT_DIR, trip_data_filename))
+    write_file(trip_data_json, os.path.join(OUTPUT_DIR, f"{output_filename}.json"))
 
     # And we're done!
-    logging.info("Complete! Markdown summary generated successfully")
+    logging.info("Complete! Summary of trips generated successfully")
 
 
 # Entry point of the script
