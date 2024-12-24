@@ -1,4 +1,3 @@
-import json
 import os
 import sys
 import glob
@@ -7,12 +6,14 @@ import logging
 from dotenv import load_dotenv
 from datetime import datetime
 from constants import GPT_API_VERSION, OUTPUT_DIR
+from locations import get_location_data
 from markdown import generate_markdown
+from trips import collate_trips
 from utils import read_file, serialise, write_file
 from open_ai import OpenAIClient
-from summaries import generate_image_summary, generate_trip_summary, get_location_data, collate_trip
+from summaries import generate_image_summary, generate_trip_summary
 from typing import List
-from trip_image import TripImage
+from data_models import TripImage
 
 
 # Main function
@@ -23,7 +24,9 @@ def main() -> None:
     )
 
     # Parse command-line arguments
-    args_parser = argparse.ArgumentParser(description="Parse images from a specified path.")
+    args_parser = argparse.ArgumentParser(
+        description="Parse images from a specified path."
+    )
 
     # Add argument for the path to the directory containing images
     args_parser.add_argument(
@@ -33,7 +36,7 @@ def main() -> None:
     image_directory = args.path
 
     # Ensure directory does not start with a slash
-    image_directory = image_directory.lstrip('/')
+    image_directory = image_directory.lstrip("/")
 
     # Get the current base directory to create a full path
     working_directory = os.getcwd()
@@ -57,16 +60,6 @@ def main() -> None:
         logging.error("Required environment variables not set.")
         sys.exit(1)
 
-    # Create an instance of the Azure OpenAI client
-    try:
-        ai_client = OpenAIClient(
-            os.getenv("AZURE_OPENAI_ENDPOINT"),
-            os.getenv("AZURE_OPENAI_API_KEY"),
-            GPT_API_VERSION)
-    except Exception as e:
-        logging.error(f"Failed to create OpenAI client: {e}")
-        sys.exit(1)
-
     # Parse image metadata
     logging.info("Processing trip images...")
     images: List[TripImage] = []
@@ -81,59 +74,48 @@ def main() -> None:
         logging.info(f"Processing {basename}...")
 
         # Get location data for the image
-        try:
-            trip_image = get_location_data(image, os.getenv("AZURE_MAPS_KEY"))
-        except Exception as e:
-            logging.error(f"Failed to get location data for {basename}: {e}")
-            continue
+        trip_image = get_location_data(image, os.getenv("AZURE_MAPS_KEY"))
 
         # Add the image to the list if it was successfully processed
         if trip_image:
             images.append(trip_image)
 
-    # Sort images by date taken
-    logging.info("Sorting trip data by date image taken...")
-    sorted_images = sorted(images, key=lambda x: x.date)
+    # Collate the images into trips
+    collated_trips = collate_trips(images)
+
+    # Generate the summary using the Azure OpenAI API
+    logging.info("Generating summary of each trip...")
 
     # Read the context file to provide additional information
     context_file = os.path.join(full_path, "context.txt")
     context = read_file(context_file)
 
-    # Get GPT to group the images into trips
-    try:
-        collated_trips = collate_trip(ai_client, sorted_images, context)
-    except Exception as e:
-        logging.error(f"Failed to collate images into trips: {e}")
-        sys.exit(1)
+    # Create an instance of the Azure OpenAI client
+    ai_client = OpenAIClient(
+        os.getenv("AZURE_OPENAI_ENDPOINT"),
+        os.getenv("AZURE_OPENAI_API_KEY"),
+        GPT_API_VERSION,
+    )
 
-    # Deserialise the collated trip data output from the OpenAI API
-    collated_trip_object = json.loads(collated_trips)
+    # Iterate over each trip and generate a summary
+    for trip in collated_trips:
+        logging.info(f"Processing trip to {trip.country}...")
 
-    # Generate the summary using the Azure OpenAI API
-    logging.info("Generating summary of each trip...")
-    try:
-        # Iterate over each trip and generate a summary
-        for trip in collated_trip_object:
-            logging.info(f"Processing trip to {trip['country']}...")
+        # Generate a summary for each image in the trip
+        for image in trip.images:
+            image_summary_content = generate_image_summary(ai_client, image, context)
+            image.caption = image_summary_content
 
-            # Generate a summary for each image in the trip
-            for image in trip["images"]:
-                image_summary_content = generate_image_summary(ai_client, image, context)
-                image["caption"] = image_summary_content
-
-            # Generate a summary for the trip overall
-            trip_summary_content = generate_trip_summary(ai_client, trip, context)
-            trip["summary"] = trip_summary_content
-    except Exception as e:
-        logging.error(f"Failed to generate summary of trip: {e}")
-        sys.exit(1)
+        # Generate a summary for the trip overall
+        trip_summary_content = generate_trip_summary(ai_client, trip, context)
+        trip.summary = trip_summary_content
 
     # Generate the markdown summary
     logging.info("Generating markdown for all trips...")
-    markdown = generate_markdown(collated_trip_object)
+    markdown = generate_markdown(collated_trips)
 
     # Serialise the trip data to JSON
-    trip_data_json = serialise(collated_trip_object)
+    trip_data_json = serialise(collated_trips)
 
     # Get the current timestamp to create a filename
     output_filename = f"summary_{datetime.now().strftime('%Y%m%d%H%M%S')}"
