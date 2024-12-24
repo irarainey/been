@@ -1,6 +1,6 @@
 # Been 🗺️
 
-Been is a tool that creates a travel journal from photographs taken at places you have visited. The tool uses the EXIF data from the photographs, Azure Maps to reverse geocode the location, and Azure OpenAI to generate a summary of each photograph and then the journey as a whole. These summaries and image captions, together with the images and map links are combined into a markdown file to create a travel journal. Additional context also can be supplied in the form of a context file to provide further information about your trips.
+Been is a tool that uses AI to automatically create a travel journal from photographs taken at places you have visited. The tool uses the EXIF data from the photographs, Azure Maps to reverse geocode the location, and Azure OpenAI with a `gpt-4o` model to generate a description of each photograph and then summarise the journey as a whole. The summaries and image captions, together with the images and map links are combined into a markdown file to create a travel journal. Additional context also can be supplied in the form of a context file to provide further information about your trips.
 
 An example of the output of the tool can be seen in the [example summary](/trips/summary.md) file in the trips directory within this project.
 
