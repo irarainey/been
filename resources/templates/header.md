@@ -1,1 +1,1 @@
-# Travel Journal for {{ year }}
+# Travel Journal for {{ year }} 🗺️
