@@ -1,8 +1,8 @@
 #!/bin/bash
 set -o pipefail
 
-# Activate poetry shell
-poetry shell
+# Activate virtual environment
+source $(poetry env info --path)/bin/activate
 
 # Display banner
 figlet "been"

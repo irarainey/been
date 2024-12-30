@@ -2,9 +2,14 @@
     "name": "Python Dev Container",
     "image": "mcr.microsoft.com/devcontainers/python:dev-3.11",
     "features": {
-      "ghcr.io/devcontainers-extra/features/ffmpeg-apt-get:1": {}
+      "ghcr.io/devcontainers-extra/features/ffmpeg-apt-get:1": {},
+      "ghcr.io/devcontainers-extra/features/poetry:2": {},
+      "ghcr.io/devcontainers-extra/features/apt-packages:1": {
+        "packages": ["exiftool", "figlet"]
+      }
     },
-    "postCreateCommand": ".devcontainer/post-install.sh",
+    "postStartCommand": "poetry install",
+    "runArgs": ["--network=host"],
     "customizations": {
       "vscode": {
         "extensions": [

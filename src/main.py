@@ -8,10 +8,11 @@ from datetime import datetime
 from constants import GPT_API_VERSION, OUTPUT_DIR
 from locations import get_location_data
 from markdown import generate_markdown
+from phi_client import PhiClient
 from trips import collate_trips
 from utils import read_file, serialise, write_file
-from open_ai import OpenAIClient
-from summaries import generate_image_summary, generate_trip_summary
+from gpt_client import OpenAIClient
+from summaries import generate_image_summary, generate_phi_trip_summary, generate_gpt_trip_summary
 from typing import List
 from data_models import TripImage
 
@@ -91,11 +92,20 @@ def main() -> None:
     context = read_file(context_file)
 
     # Create an instance of the Azure OpenAI client
-    ai_client = OpenAIClient(
+    gpt_client = OpenAIClient(
         os.getenv("AZURE_OPENAI_ENDPOINT"),
         os.getenv("AZURE_OPENAI_API_KEY"),
         GPT_API_VERSION,
     )
+
+    # Do we want to use a Phi model for the trip summary?
+    use_phi_model = os.getenv("USE_PHI_MODEL", "false").lower() == "true"
+    if use_phi_model:
+        # Create an instance of the Phi client
+        phi_client = PhiClient(
+            os.getenv("PHI_ENDPOINT"),
+            os.getenv("PHI_API_KEY")
+        )
 
     # Iterate over each trip and generate a summary
     for trip in collated_trips:
@@ -103,12 +113,14 @@ def main() -> None:
 
         # Generate a summary for each image in the trip
         for image in trip.images:
-            image_summary_content = generate_image_summary(ai_client, image, context)
+            image_summary_content = generate_image_summary(gpt_client, image, context)
             image.caption = image_summary_content
 
         # Generate a summary for the trip overall
-        trip_summary_content = generate_trip_summary(ai_client, trip, context)
-        trip.summary = trip_summary_content
+        if not use_phi_model:
+            trip.summary = generate_gpt_trip_summary(gpt_client, trip, context)
+        else:
+            trip.summary = generate_phi_trip_summary(phi_client, trip, context)
 
     # Generate the markdown summary
     logging.info("Generating markdown for all trips...")

@@ -4,7 +4,7 @@ from constants import GPT_MODEL
 from typing import List
 
 
-# OpenAI client class
+# OpenAI GPT client class
 class OpenAIClient:
     def __init__(self, endpoint: str, key: str, version: str):
         try:
@@ -14,7 +14,7 @@ class OpenAIClient:
                 api_version=version,
             )
         except Exception as e:
-            logging.error(f"Failed to create OpenAI client: {e}")
+            logging.error(f"Failed to create OpenAI GPT client: {e}")
             raise
 
     def send_prompt(self, conversation: List) -> str:
